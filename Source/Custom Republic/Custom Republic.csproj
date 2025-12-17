@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net481</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<AnalysisLevel>6.0-minimum</AnalysisLevel>
+		<Configurations>1.6</Configurations>
+		<LangVersion>latest</LangVersion>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<AppendConfigurationToOutputPath>false</AppendConfigurationToOutputPath>
+		<DebugType>none</DebugType>
+		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='1.6'">
+		<OutputPath>..\..\1.6\Assemblies\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='1.6|AnyCPU'">
+	  <WarningLevel>3</WarningLevel>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='1.6'">
+		<PackageReference Include="Krafs.Rimworld.Ref" Version="[1.6.0, 1.7.0)">
+		  <PrivateAssets>all</PrivateAssets>
+		  <Private>false</Private>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Lib.Harmony" Version="2.4.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <Private>false</Private>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="VFEC">
+	    <HintPath>..\..\..\..\..\..\workshop\content\294100\2787850474\1.6\Assemblies\VFEC.dll</HintPath>
+		<Private>false</Private>
+	  </Reference>
+	</ItemGroup>
+
+</Project>

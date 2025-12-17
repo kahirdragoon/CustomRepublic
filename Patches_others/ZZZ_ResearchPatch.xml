@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+    <!-- <Operation Class="PatchOperationAdd">
+       <xpath>Defs/ResearchProjectDef[not(prerequisites)]</xpath>
+        <value>
+            <prerequisites>
+                <li>VFET_Culture</li>
+            </prerequisites>
+        </value>
+    </Operation> -->
+    <Operation Class="PatchOperationAdd">
+       <xpath>Defs/ResearchProjectDef/prerequisites[not(li)]</xpath>
+        <value>
+            <li>VFET_Culture</li>
+        </value>
+    </Operation>
+    <Operation Class="PatchOperationReplace">
+       <xpath>Defs/ResearchProjectDef/prerequisites[li="TreeSowing"]/li</xpath>
+        <value>
+            <li>VFET_Culture</li>
+        </value>
+    </Operation>
+</Patch>

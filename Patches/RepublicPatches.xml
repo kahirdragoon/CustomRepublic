@@ -1,0 +1,9 @@
+<Patch>
+    <Operation Class="PatchOperationRemove">
+        <xpath>Defs/VFEC.Senators.RepublicDef/parts/li</xpath>
+    </Operation>
+    
+    <Operation Class="PatchOperationRemove">
+        <xpath>Defs/FactionDef/modExtensions/li[@Class="VFEC.Senators.FactionExtension_SenatorInfo"]</xpath>
+    </Operation>
+</Patch>

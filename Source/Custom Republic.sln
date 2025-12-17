@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36705.20
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Custom Republic", "Custom Republic\Custom Republic.csproj", "{F4A1C613-A90A-25F4-1406-B89681782EE1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		1.6|Any CPU = 1.6|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4A1C613-A90A-25F4-1406-B89681782EE1}.1.6|Any CPU.ActiveCfg = 1.6|Any CPU
+		{F4A1C613-A90A-25F4-1406-B89681782EE1}.1.6|Any CPU.Build.0 = 1.6|Any CPU
+		{F4A1C613-A90A-25F4-1406-B89681782EE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4A1C613-A90A-25F4-1406-B89681782EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4A1C613-A90A-25F4-1406-B89681782EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4A1C613-A90A-25F4-1406-B89681782EE1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E4A26EA-5472-4BC8-9A9E-ADC136250182}
+	EndGlobalSection
+EndGlobal

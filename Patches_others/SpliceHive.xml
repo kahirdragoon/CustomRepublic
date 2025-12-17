@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Biotech Expansion - Insectoid</li>
+        </mods>
+        <match Class="PatchOperationAddModExtension">
+            <xpath>Defs/FactionDef[defName="BTEIst_SpliceHive"]</xpath>
+            <value>
+                <li Class="VFEC.Senators.FactionExtension_SenatorInfo">
+                    <numSenators>5</numSenators>
+                    <senatorPerks>
+                        <li>ExitusActaProbat</li>
+                        <li>AleaIactaEst</li>
+                        <li>PecuniaNervusBelli</li>
+                        <li>SiVisPacemParaBellum</li>
+                        <li>NosMorituriTeSalutant</li>
+                    </senatorPerks>
+                    <senatorResearch>
+                        <li>VFEC_HeavyShieldMaking</li>
+                        <li>VFEC_LegionaryArmaments</li>
+                        <li>VFEC_LegionnaireArmor</li>
+                        <li>VFEC_CenturionArmor</li>
+                        <li>VFEC_Scorpion</li>
+                    </senatorResearch>
+                    <finalResearch>VFEC_Beacons</finalResearch>
+                    <finalPerk>Auxilia</finalPerk>
+                    <perkBGPath>UI/Perks/PerkBG_WesternRepublic</perkBGPath>
+                </li>
+            </value>
+        </match>
+    </Operation>
+</Patch>

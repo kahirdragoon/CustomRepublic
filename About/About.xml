@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>Custom Republic</name>
+    <author>KahirDragoon</author>
+    <packageId>kahirDragoon.customrepublic</packageId>
+    <supportedVersions>
+        <li>1.6</li>
+    </supportedVersions>
+    <description>Changes the Rpublic to contain insect factions
+    </description>
+    <modDependencies>
+        <li>
+			<packageId>oskarpotocki.vfe.classical</packageId>
+			<displayName>Vanilla Factions Expanded - Classical</displayName>
+            <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2787850474</steamWorkshopUrl>
+		</li>
+    </modDependencies>
+    <loadAfter>
+        <li>oskarpotocki.vfe.classical</li>
+    </loadAfter>
+</ModMetaData>

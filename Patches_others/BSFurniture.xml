@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Big and Small Furniture</li>
+        </mods>
+		
+        <match Class="PatchOperationSequence">
+            <operations>
+
+                <li Class="PatchOperationReplace">
+                    <xpath>Defs/ThingDef[defName="BS_Giant_AnimalSleepingSpot"]/designationCategory</xpath>
+                    <value>
+                        <designationCategory>Ferny_Bedroom</designationCategory>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationReplace">
+                    <xpath>Defs/ThingDef[defName="BS_Giant_AnimalSleepingBox"]/designationCategory</xpath>
+                    <value>
+                        <designationCategory>Ferny_Animals</designationCategory>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationReplace">
+                    <xpath>Defs/ThingDef[defName="BS_Giant_AnimalBed"]/designationCategory</xpath>
+                    <value>
+                        <designationCategory>Ferny_Animals</designationCategory>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationReplace">
+                    <xpath>Defs/ThingDef[defName="BS_Giant_AnimalSleepingSpot"]/designationCategory</xpath>
+                    <value>
+                        <designationCategory>Ferny_Animals</designationCategory>
+                    </value>
+                </li>
+                
+                <li Class="PatchOperationReplace">
+                    <xpath>Defs/ThingDef[designationCategory="BS_Furniture"]/designationCategory</xpath>
+                    <value>
+                        <designationCategory>Ferny_Bedroom</designationCategory>
+                    </value>
+                </li>
+
+                <li Class="PatchOperationRemove">
+                    <xpath>Defs/DesignationCategoryDef[defName="BS_Furniture"]</xpath>
+                </li>
+
+            </operations>
+        </match>
+    </Operation>
+</Patch>

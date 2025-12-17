@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Big and Small - Xeno Insectoid Hive</li>
+        </mods>
+        <match Class="PatchOperationAddModExtension">
+            <xpath>Defs/FactionDef[defName="BS_XenoHive"]</xpath>
+            <value>
+                <li Class="VFEC.Senators.FactionExtension_SenatorInfo">
+                    <numSenators>5</numSenators>
+                    <senatorPerks>
+                        <li>AmorVincitOmnia</li>
+                        <li>CarpeDiem</li>
+                        <li>NilDesperandum</li>
+                        <li>PanemEtCircenses</li>
+                        <li>ArsLongaVitaBrevis</li>
+                    </senatorPerks>
+                    <senatorResearch>
+                        <li>VFEC_Togas</li>
+                        <li>VFEC_TemperatureControl</li>
+                        <li>VFEC_MeatDrying</li>
+                        <li>VFEC_Mosaics</li>
+                        <li>VFEC_Thermaebath</li>
+                    </senatorResearch>
+                    <finalResearch>VFEC_DramaAndComedy</finalResearch>
+                    <finalPerk>Tributum</finalPerk>
+                    <perkBGPath>UI/Perks/PerkBG_CentralRepublic</perkBGPath>
+                </li>
+            </value>
+        </match>
+    </Operation>
+</Patch>
