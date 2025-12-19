@@ -1,28 +1,57 @@
-﻿using Verse;
+﻿using RimWorld;
+using Verse;
+using VFEC.Perks;
+using VFEC.Senators;
 
 namespace Custom_Republic;
+
 public class RepublicState : IExposable
 {
-    public HashSet<string> selectedFactions = new();
+    public List<RepublicStateFaction> factionStates = new();
+    public bool United => customRepublicDef != null ? GameComponent_PerkManager.Instance.ActivePerks.Contains(customRepublicDef.perk) : false;
+    private RepublicDef customRepublicDef = DefDatabase<RepublicDef>.AllDefs.FirstOrDefault();
+    private Dictionary<string, FactionDef> factionCache = new();
 
-    public Dictionary<string, int> senatorsPerFaction = new();
+    public bool HasFaction(FactionDef factionDef)
+    {
+        return factionStates.Exists(f => f.factionDefName == factionDef.defName);
+    }
 
-    public Dictionary<string, List<string>> perksPerFaction = new();
-    public Dictionary<string, string> finalPerkPerFaction = new();
+    public List<FactionDef> GetFactionDefs(RepublicDef republicDef)
+    {
+        if(republicDef != customRepublicDef)
+            return republicDef.parts;
 
-    public Dictionary<string, List<string>> researchPerFaction = new();
-    public Dictionary<string, string> finalResearchPerFaction = new();
+        var defs = new List<FactionDef>();
+
+        factionStates.ForEach(factionState =>
+        {
+            if (factionCache.TryGetValue(factionState.factionDefName, out var factionDef))
+                defs.Add(factionDef);
+            else
+            {
+                factionDef = DefDatabase<FactionDef>.GetNamedSilentFail(factionState.factionDefName);
+                if (factionDef != null)
+                {
+                    factionCache[factionState.factionDefName] = factionDef;
+                    defs.Add(factionDef);
+                }
+            }
+        });
+        return defs;
+    }
+
+    public void Deconstruct(out List<RepublicStateFaction> factions, out bool united)
+    {
+        factions = factionStates;
+        united = United;
+    }
 
     public void ExposeData()
     {
-        Scribe_Collections.Look(ref selectedFactions, "selectedFactions", LookMode.Value);
+        Scribe_Collections.Look(ref factionStates, "factionStates", LookMode.Deep);
 
-        Scribe_Collections.Look(ref senatorsPerFaction, "senatorsPerFaction", LookMode.Value, LookMode.Value);
-
-        Scribe_Collections.Look(ref perksPerFaction, "perksPerFaction", LookMode.Value, LookMode.Value);
-        Scribe_Collections.Look(ref finalPerkPerFaction, "finalPerkPerFaction", LookMode.Value, LookMode.Value);
-
-        Scribe_Collections.Look(ref researchPerFaction, "researchPerFaction", LookMode.Value, LookMode.Value);
-        Scribe_Collections.Look(ref finalResearchPerFaction, "finalResearchPerFaction", LookMode.Value, LookMode.Value);
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            factionStates ??= new List<RepublicStateFaction>();
     }
 }

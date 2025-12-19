@@ -6,7 +6,7 @@ using Verse;
 
 namespace Custom_Republic;
 [HarmonyPatch(typeof(Page_CreateWorldParams), nameof(Page_CreateWorldParams.DoWindowContents))]
-public static class Patch_Page_CreateWorldParams_RepublicButton
+public static class Patch_RepublicButton
 {
     static void Postfix(Page_CreateWorldParams __instance, Rect rect)
     {

@@ -1,6 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Patch>
     <Operation Class="PatchOperationRemove">
-        <xpath>Defs/VFEC.Senators.RepublicDef/parts/li</xpath>
+        <xpath>Defs/VFEC.Senators.RepublicDef[defName="VFEC_Republic"]/parts/li</xpath>
+    </Operation>
+
+    <Operation Class="PatchOperationReplace">
+        <xpath>Defs/VFEC.Senators.RepublicDef[defName="VFEC_Republic"]/letterText</xpath>
+        <value>
+            <letterText>>
+                After gaining the support of all parts of the republic, it has now united under your faction's rule.
+            </letterText>
+        </value>
     </Operation>
     
     <Operation Class="PatchOperationRemove">

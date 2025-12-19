@@ -1,4 +1,6 @@
-﻿using Verse;
+﻿using HarmonyLib;
+using Verse;
+using VFEC.Senators;
 
 namespace Custom_Republic;
 public class GameComponent_Republic : GameComponent
@@ -6,31 +8,22 @@ public class GameComponent_Republic : GameComponent
     public RepublicState state = new();
     public RepublicRules rules = new();
 
+    private static bool Patched;
+
     public GameComponent_Republic(Game game) : base()
     {
-    }
-
-    public override void StartedNewGame()
-    {
-        EnsureInitialized();
-        ApplyRepublicState();
+        if(Patched) return;
+        CustomRepublicMod.Harmony.PatchAll();
+        Patch_GetModExtension.Apply(CustomRepublicMod.Harmony, typeof(VFEC.Senators.Dialog_PerkInfo).Assembly);
+        Patch_RepublicParts.Apply(CustomRepublicMod.Harmony);
+        Patched = true;
     }
 
     public override void LoadedGame()
     {
         EnsureInitialized();
-        ApplyRepublicState();
-    }
-
-    public void ResetForNewGame()
-    {
-        state = new RepublicState();
-        rules = new RepublicRules();
-    }
-
-    private void ApplyRepublicState()
-    {
-        RepublicApplier.Apply(rules, state);
+        if (state.factionStates.NullOrEmpty())
+            RepublicStateBuilder.BuildFromRules();
     }
 
     public override void ExposeData()

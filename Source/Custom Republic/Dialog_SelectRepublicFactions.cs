@@ -85,7 +85,7 @@ public class Dialog_SelectRepublicFactions : Window
             prioritizeTechprintResearch = rules.prioritizeTechprintResearch;
             onlyTechprintResearch = rules.onlyTechprintResearch;
 
-            distributeSenatorsEvenly = rules.distributeSenatorsEvenly;
+            distributeSenatorsEvenly = rules.autoCalculateSenatorsPerFaction;
             if(rules.numOfSenatorsPerFaction > 0)
                 numOfSenatorsPerfaction = rules.numOfSenatorsPerFaction;
         }
@@ -365,7 +365,7 @@ public class Dialog_SelectRepublicFactions : Window
         comp.rules.onlyTechprintResearch = onlyTechprintResearch;
         comp.rules.prioritizeTechprintResearch = prioritizeTechprintResearch;
         comp.rules.allowedTechLevels = allowedTechLevels;
-        comp.rules.distributeSenatorsEvenly = distributeSenatorsEvenly;
+        comp.rules.autoCalculateSenatorsPerFaction = distributeSenatorsEvenly;
         comp.rules.numOfSenatorsPerFaction = numOfSenatorsPerfaction;
         comp.rules.selectedFactionDefs = selectedFactions.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName).ToList();
         comp.rules.pawnKindPerFaction = selectedFactionPawnKinds

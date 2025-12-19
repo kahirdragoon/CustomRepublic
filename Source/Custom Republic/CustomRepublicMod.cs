@@ -9,9 +9,10 @@ using Verse;
 namespace Custom_Republic;
 internal class CustomRepublicMod : Mod
 {
+    public static Harmony Harmony = null!;
+
     public CustomRepublicMod(ModContentPack content) : base(content)
     {
-        var harmony = new Harmony("kahirdragoon.customrepublic");
-        harmony.PatchAll();
+        Harmony = new Harmony("kahirdragoon.customrepublic");      
     }
 }
