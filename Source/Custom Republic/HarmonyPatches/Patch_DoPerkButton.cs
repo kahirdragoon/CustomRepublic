@@ -4,7 +4,7 @@ using UnityEngine;
 using Verse;
 using VFEC.Senators;
 
-[HarmonyPatch(typeof(SenatorUIUtility), nameof(SenatorUIUtility.DoPerkButton))]
+//[HarmonyPatch(typeof(SenatorUIUtility), nameof(SenatorUIUtility.DoPerkButton))]
 public static class Patch_DoPerkButton
 {
     public static bool Prefix()

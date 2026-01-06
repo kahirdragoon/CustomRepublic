@@ -9,7 +9,7 @@ using VFEC.Senators;
 
 namespace Custom_Republic
 {
-    [HarmonyPatch]
+    //[HarmonyPatch]
     static class Patch_Dialog_PerkInfo_FactionData
     {
         public static MethodBase TargetMethod()
@@ -55,7 +55,7 @@ namespace Custom_Republic
                     DefDatabase<FactionDef>.GetNamedSilentFail(fs.factionDefName);
                 if (factionDef == null) continue;
 
-                var ext = RepublicExtensionFactory.CreateForFaction(factionDef, state);
+                var ext = FactionExtension_SenatorInfoExtendedFactory.CreateForFaction(factionDef, state);
                 if (ext == null) continue;
 
                 var factionData = ctor.Invoke(new object[] { factionDef, ext });

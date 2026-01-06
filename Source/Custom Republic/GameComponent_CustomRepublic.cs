@@ -14,8 +14,9 @@ public class GameComponent_Republic : GameComponent
     {
         if(Patched) return;
         CustomRepublicMod.Harmony.PatchAll();
-        Patch_GetModExtension.Apply(CustomRepublicMod.Harmony, typeof(VFEC.Senators.Dialog_PerkInfo).Assembly);
-        Patch_RepublicParts.Apply(CustomRepublicMod.Harmony);
+        Log.Message("[Custom Republic] applying ModExtensions harmony patches");
+        Patch_ModExtension.Apply();
+        //Patch_RepublicParts.Apply(CustomRepublicMod.Harmony);
         Patched = true;
     }
 

@@ -22,7 +22,7 @@ public class RepublicStateFaction : IExposable
     public string? pawnKindDef = string.Empty;
 
     private FactionExtension_SenatorInfo? _senatorExtension;
-    public FactionExtension_SenatorInfo? SenatorExtension => RepublicExtensionFactory.CreateForFaction(FactionDef);
+    //public FactionExtension_SenatorInfo? SenatorExtension => RepublicExtensionFactory.CreateForFaction(FactionDef);
 
     public void ExposeData()
     {

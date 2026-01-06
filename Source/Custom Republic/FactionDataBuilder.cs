@@ -17,7 +17,7 @@ namespace Custom_Republic
             if (faction == null)
                 return null;
 
-            var ext = RepublicExtensionFactory.CreateForFaction(factionDef, state);
+            var ext = FactionExtension_SenatorInfoExtendedFactory.CreateForFaction(factionDef, state);
             if (ext == null)
                 return null;
 

@@ -6,23 +6,35 @@ using System.Collections.Generic;
 
 namespace Custom_Republic;
 
-public static class RepublicExtensionFactory
+public static class FactionExtension_SenatorInfoExtendedFactory
 {
     private static readonly Dictionary<string, FactionExtension_SenatorInfoExtended> cache = new();
 
-    public static FactionExtension_SenatorInfo GetForFaction(FactionDef def)
+    public static FactionExtension_SenatorInfo CreateForFactionFromDef(Def def)
     {
-        if (cache.TryGetValue(def.defName, out var ext))
-            return ext;
+        if (def is not FactionDef factionDef)
+            return def.GetModExtension<FactionExtension_SenatorInfo>();
 
-        var comp = Current.Game?.GetComponent<GameComponent_Republic>();
-        return comp?.state != null
-            ? RepublicExtensionFactory.CreateForFaction(def, comp.state)
-            : def.GetModExtension<FactionExtension_SenatorInfo>();
+        return CreateForFaction(factionDef);
+    }
+
+    public static FactionExtension_SenatorInfo CreateForFaction(FactionDef? factionDef)
+    {
+        if (factionDef is null)
+        {
+            Log.Warning($"[Custom Republic] NULL Faction");
+            return (FactionExtension_SenatorInfoExtended)Empty();
+        }
+        Log.Message($"[Custom Republic] (1) Creating senator extension for faction {factionDef.defName}");
+
+        var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
+
+        return CreateForFaction(factionDef, state);
     }
 
     public static FactionExtension_SenatorInfo CreateForFaction(FactionDef factionDef, RepublicState? state)
     {
+        Log.Message($"[Custom Republic] (2) Creating senator extension for faction {factionDef.defName}");
         if (cache.TryGetValue(factionDef.defName, out var ext))
             return ext;
 
@@ -30,7 +42,7 @@ public static class RepublicExtensionFactory
         if (factionState is null)
         {
             Log.Warning($"[Custom Republic] No republic state for faction {factionDef.defName}");
-            return (FactionExtension_SenatorInfoExtended)Empty();
+            return default(FactionExtension_SenatorInfoExtended);
         }
 
         ext = new FactionExtension_SenatorInfoExtended
@@ -58,20 +70,9 @@ public static class RepublicExtensionFactory
         if (!string.IsNullOrEmpty(factionState.pawnKindDef))
             ext.senatorPawnKindDef = DefDatabase<PawnKindDef>.GetNamedSilentFail(factionState.pawnKindDef);
 
+        cache.Add(factionDef.defName, ext);
+
         return ext;
-    }
-
-    public static FactionExtension_SenatorInfo CreateForFaction(FactionDef? factionDef)
-    {
-        if (factionDef is null)
-        {
-            Log.Warning($"[Custom Republic] NULL Faction");
-            return (FactionExtension_SenatorInfoExtended)Empty();
-        }
-
-        var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
-
-        return CreateForFaction(factionDef, state);
     }
 
     private static FactionExtension_SenatorInfo Empty()
