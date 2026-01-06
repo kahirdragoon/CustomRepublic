@@ -1,2 +1,4 @@
 - invite factions to republic
+- mark faction with existing SenatorInfos as part of the republic during selection screen
 - patch beacon GetFactionsInReinforcementOrder
+- code cleanup

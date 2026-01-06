@@ -14,7 +14,6 @@ public class GameComponent_Republic : GameComponent
     {
         if(Patched) return;
         CustomRepublicMod.Harmony.PatchAll();
-        //Log.Message("[Custom Republic] applying ModExtensions harmony patches");
         Patch_Reroute_VFEC_Calls.Apply();
         Patched = true;
     }

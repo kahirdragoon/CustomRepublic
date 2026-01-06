@@ -113,7 +113,7 @@ public static class RepublicStateBuilder
         bool useAllTechLevels = rules.allowedTechLevels == null || rules.allowedTechLevels.Count == 0;
 
         var allAllowed = DefDatabase<ResearchProjectDef>.AllDefsListForReading
-            .Where(r => useAllTechLevels ||  rules.allowedTechLevels!.Contains(r.techLevel))
+            .Where(r => (useAllTechLevels ||  rules.allowedTechLevels!.Contains(r.techLevel)) && r.tab != ResearchTabDefOf.Anomaly)
             .ToList();
 
         var techprint = allAllowed.Where(r => r.techprintCount > 0).ToList();
