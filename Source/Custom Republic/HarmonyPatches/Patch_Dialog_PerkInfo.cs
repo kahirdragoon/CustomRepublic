@@ -7,7 +7,7 @@ using UnityEngine;
 using Verse;
 using VFEC.Senators;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 [HarmonyPatch]
 internal static class Patch_Dialog_PerkInfo_FactionData

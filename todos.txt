@@ -1,4 +1,6 @@
 - invite factions to republic
+    - limit command to allies or at least 50 opinon
+    - create positive letter
 - mark faction with existing SenatorInfos as part of the republic during selection screen
 - patch beacon GetFactionsInReinforcementOrder
-- code cleanup
+- make random research respect tech level of faction

@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 [HarmonyPatch(typeof(Page_SelectStartingSite), nameof(Page_CreateWorldParams.PreOpen))]
 internal static class Patch_BuildRepublicState

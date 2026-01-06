@@ -4,7 +4,7 @@ using Verse;
 using VFEC.Perks;
 using VFEC.Senators;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 public class RepublicStateFaction : IExposable
 {

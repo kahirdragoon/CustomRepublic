@@ -6,7 +6,7 @@ using VFEC.Perks;
 using VFEC.Senators;
 using static System.Collections.Specialized.BitVector32;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 public class Dialog_SelectRepublicFactions : Window
 {
     public override Vector2 InitialSize => new Vector2(1000f, 720f);

@@ -5,7 +5,7 @@ using System.Linq;
 using Verse;
 using VFEC.Perks;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 public static class RepublicStateBuilder
 {
@@ -13,7 +13,7 @@ public static class RepublicStateBuilder
     {
         var comp = Current.Game.GetComponent<GameComponent_Republic>();
         var rules = comp.rules;
-        var state = new RepublicState();
+        var state = comp.state;
 
         // --- Resolve defs from rules ---
         var factionDefs = rules.selectedFactionDefs
@@ -30,7 +30,7 @@ public static class RepublicStateBuilder
         var researchPool = ResolveResearchPool(rules, factionDefs.Count);
 
         // --- Determine available senators ---
-        int availableSenators = Math.Min(researchPool.nonFinal.Count + researchPool.final.Count, perkDefs.Count);
+        int availableSenators = Math.Min(researchPool.nonFinal.Count, perkDefs.Count);
 
         int senatorsPerFactionFallback = Math.Max(1, rules.numOfSenatorsPerFaction);
 
@@ -50,7 +50,7 @@ public static class RepublicStateBuilder
         perkDefs = perkDefs.InRandomOrder().ToList();
         researchPool.nonFinal = researchPool.nonFinal.InRandomOrder().ToList();
 
-        foreach (var faction in factionDefs)
+        foreach (var factionDef in factionDefs)
         {
             int numSenators;
 
@@ -90,12 +90,12 @@ public static class RepublicStateBuilder
             finalResearchIndex = (finalResearchIndex + 1) % researchPool.final.Count;
 
             // --- PawnKind ---
-            rules.pawnKindPerFaction.TryGetValue(faction.defName, out var pawnKindDef);
+            rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var pawnKindDef);
 
             state.factionStates.Add(new RepublicStateFaction
             {
-                factionDefName = faction.defName,
-                FactionDef = faction,
+                factionDefName = factionDef.defName,
+                FactionDef = factionDef,
                 numSenators = numSenators,
                 senatorPerks = senatorPerks,
                 finalPerk = finalPerk,
@@ -104,8 +104,6 @@ public static class RepublicStateBuilder
                 pawnKindDef = pawnKindDef,
             });
         }
-
-        comp.state = state;
     }
 
     private static (List<ResearchProjectDef> nonFinal, List<ResearchProjectDef> final) ResolveResearchPool(RepublicRules rules, int factionCount)
@@ -151,6 +149,63 @@ public static class RepublicStateBuilder
             final.Add(nonFinal[0]);
 
         return (nonFinal, final);
+    }
+
+    public static RepublicStateFaction BuildFactionState(FactionDef factionDef, int numSenators, PawnKindDef? senatorPawnKind = null)
+    {
+        var rules = Current.Game.GetComponent<GameComponent_Republic>().rules;
+
+        rules.selectedFactionDefs.Add(factionDef.defName);
+
+        var perkDefs = rules.selectedPerkDefs
+            .Select(DefDatabase<PerkDef>.GetNamedSilentFail)
+            .Where(p => p != null)
+            .ToList();
+
+        var researchPool = ResolveResearchPool(rules, 1);
+
+        int perkIndex = 0;
+        int researchIndex = 0;
+        int finalResearchIndex = 0;
+
+        perkDefs = perkDefs.InRandomOrder().ToList();
+        researchPool.nonFinal = researchPool.nonFinal.InRandomOrder().ToList();
+
+        numSenators = Math.Min(numSenators, 5);
+        
+        var senatorPerks = new List<string>();
+        for (int i = 0; i < numSenators; i++)
+        {
+            senatorPerks.Add(perkDefs[perkIndex].defName);
+            perkIndex = (perkIndex + 1) % perkDefs.Count;
+        }
+
+        string finalPerk = perkDefs[perkIndex].defName;
+        perkIndex = (perkIndex + 1) % perkDefs.Count;
+
+        var senatorResearch = new List<string>();
+        for (int i = 0; i < numSenators; i++)
+        {
+            senatorResearch.Add(researchPool.nonFinal[researchIndex].defName);
+            researchIndex = (researchIndex + 1) % researchPool.nonFinal.Count;
+        }
+
+        string finalResearch = researchPool.final[finalResearchIndex].defName;
+        finalResearchIndex = (finalResearchIndex + 1) % researchPool.final.Count;
+
+        rules.pawnKindPerFaction[factionDef.defName] = senatorPawnKind?.defName;
+
+        return new RepublicStateFaction
+        {
+            factionDefName = factionDef.defName,
+            FactionDef = factionDef,
+            numSenators = numSenators,
+            senatorPerks = senatorPerks,
+            finalPerk = finalPerk,
+            senatorResearch = senatorResearch,
+            finalResearch = finalResearch,
+            pawnKindDef = senatorPawnKind?.defName,
+        };
     }
 }
 

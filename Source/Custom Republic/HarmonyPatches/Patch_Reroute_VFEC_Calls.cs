@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using Verse;
 using VFEC.Senators;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 internal static class Patch_Reroute_VFEC_Calls
 {

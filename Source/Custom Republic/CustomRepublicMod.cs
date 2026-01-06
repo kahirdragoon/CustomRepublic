@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 internal class CustomRepublicMod : Mod
 {
     public static Harmony Harmony = null!;

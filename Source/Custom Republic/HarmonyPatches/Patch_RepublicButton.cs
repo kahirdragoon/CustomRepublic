@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEngine;
 using Verse;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 [HarmonyPatch(typeof(Page_CreateWorldParams), nameof(Page_CreateWorldParams.DoWindowContents))]
 internal static class Patch_RepublicButton
 {

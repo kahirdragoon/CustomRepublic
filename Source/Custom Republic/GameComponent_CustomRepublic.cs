@@ -2,7 +2,7 @@
 using Verse;
 using VFEC.Senators;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 public class GameComponent_Republic : GameComponent
 {
     public RepublicState state = new();

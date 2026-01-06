@@ -4,7 +4,7 @@ using VFEC.Senators;
 using VFEC.Perks;
 using System.Collections.Generic;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 public static class FactionExtension_SenatorInfoExtendedFactory
 {

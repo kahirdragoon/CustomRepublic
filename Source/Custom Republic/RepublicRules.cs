@@ -1,7 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 
 public class RepublicRules : IExposable
 {

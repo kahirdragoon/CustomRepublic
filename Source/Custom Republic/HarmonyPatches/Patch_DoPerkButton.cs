@@ -1,4 +1,4 @@
-﻿using Custom_Republic;
+﻿using CustomRepublic;
 using HarmonyLib;
 using UnityEngine;
 using Verse;

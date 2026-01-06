@@ -11,7 +11,7 @@ using Verse;
 using VFEC;
 using VFEC.Senators;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 [HarmonyPatch(typeof(WorldComponent_Senators), nameof(WorldComponent_Senators.GenerateSenator))]
 internal static class Patch_GenerateSenatorByPawnkind
 {

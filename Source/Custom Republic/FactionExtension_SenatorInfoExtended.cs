@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using VFEC.Senators;
 
-namespace Custom_Republic;
+namespace CustomRepublic;
 public class FactionExtension_SenatorInfoExtended : FactionExtension_SenatorInfo
 {
     public PawnKindDef? senatorPawnKindDef;
