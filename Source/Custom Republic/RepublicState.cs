@@ -8,37 +8,72 @@ namespace Custom_Republic;
 public class RepublicState : IExposable
 {
     public List<RepublicStateFaction> factionStates = new();
-    public bool United => customRepublicDef != null ? GameComponent_PerkManager.Instance.ActivePerks.Contains(customRepublicDef.perk) : false;
-    private RepublicDef customRepublicDef = DefDatabase<RepublicDef>.AllDefs.FirstOrDefault();
-    private Dictionary<string, FactionDef> factionCache = new();
+    public bool United
+    {
+        get
+        {
+            if (WorldComponent_Senators.Instance == null || Find.FactionManager == null || customRepublicDef == null)
+                return false;
 
-    public bool HasFaction(FactionDef factionDef)
+            var activeFactions = factionStates
+                    .Select(factionState => Find.FactionManager.FirstFactionOfDef(factionState.FactionDef))
+                    .Where(faction => faction != null)
+                    .ToList();
+
+            return activeFactions.Any() &&
+                   activeFactions.All(faction => WorldComponent_Senators.Instance.Permanent.TryGetValue(faction, out var perm) && perm);
+        }
+    }
+    public RepublicDef customRepublicDef = DefDatabase<RepublicDef>.AllDefs.FirstOrDefault(r => r.defName == "VFEC_Republic");
+    private Dictionary<string, FactionDef> factionCache = new();
+    private readonly List<FactionDef> republicParts = new();
+
+   public bool HasFaction(FactionDef factionDef)
     {
         return factionStates.Exists(f => f.factionDefName == factionDef.defName);
     }
 
     public List<FactionDef> GetFactionDefs(RepublicDef republicDef)
     {
-        if(republicDef != customRepublicDef)
-            return republicDef.parts;
-
-        var defs = new List<FactionDef>();
-
-        factionStates.ForEach(factionState =>
+        Log.Warning("[Custom Republic] GetFactionDefs");
+        if (republicDef == null)
         {
-            if (factionCache.TryGetValue(factionState.factionDefName, out var factionDef))
-                defs.Add(factionDef);
-            else
+            Log.Warning("[Custom Republic] RepublicDef is null, returning empty list");
+            return new List<FactionDef>();
+        }
+        if (customRepublicDef == null)
+        {
+            Log.Warning("[Custom Republic] CustomRepublicDef is null, returning empty list");
+            return [];
+        }
+        if (republicDef.defName != customRepublicDef.defName)
+        {
+            Log.Warning("[Custom Republic] RepublicDef is not custom republic, returning empty list");
+            return [];
+        }
+
+        Log.Warning("[Custom Republic] Getting faction defs for republic: " + republicDef.defName);
+
+        if (republicParts.Count <= 0)
+        {
+            Log.Message("[Custom Republic] Building republic parts list");
+            factionStates.ForEach(factionState =>
             {
-                factionDef = DefDatabase<FactionDef>.GetNamedSilentFail(factionState.factionDefName);
-                if (factionDef != null)
+                if (factionCache.TryGetValue(factionState.factionDefName, out var factionDef))
+                    republicParts.Add(factionDef);
+                else
                 {
-                    factionCache[factionState.factionDefName] = factionDef;
-                    defs.Add(factionDef);
+                    factionDef = DefDatabase<FactionDef>.GetNamedSilentFail(factionState.factionDefName);
+                    if (factionDef != null)
+                    {
+                        factionCache[factionState.factionDefName] = factionDef;
+                        republicParts.Add(factionDef);
+                    }
                 }
-            }
-        });
-        return defs;
+            });
+        }
+
+        return republicParts;
     }
 
     public void Deconstruct(out List<RepublicStateFaction> factions, out bool united)

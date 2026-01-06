@@ -13,6 +13,6 @@ internal class CustomRepublicMod : Mod
 
     public CustomRepublicMod(ModContentPack content) : base(content)
     {
-        Harmony = new Harmony("kahirdragoon.customrepublic");      
+        Harmony = new Harmony("kahirdragoon.customrepublic");
     }
 }

@@ -11,10 +11,20 @@ using VFEC.Senators;
 
 namespace Custom_Republic;
 
-// Not working. Manual prefix Patch all the methods
-public static class Patch_ModExtension
+internal static class Patch_Reroute_VFEC_Calls
 {
     private static bool isApplied = false;
+
+    private static readonly MethodInfo getModExt = AccessTools.Method(typeof(Def), nameof(Def.GetModExtension)).MakeGenericMethod(typeof(FactionExtension_SenatorInfo));
+    private static readonly MethodInfo getModExtReplacement = AccessTools.Method(typeof(FactionExtension_SenatorInfoExtendedFactory), nameof(FactionExtension_SenatorInfoExtendedFactory.CreateForFactionFromDef));
+
+    private static readonly MethodInfo hasModExt = AccessTools.Method(typeof(Def), nameof(Def.HasModExtension)).MakeGenericMethod(typeof(FactionExtension_SenatorInfo));
+    private static readonly MethodInfo hasModExtReplacement = AccessTools.Method(typeof(Patch_Reroute_VFEC_Calls), nameof(HasModExtensionReplacement));
+
+    //private static readonly MethodInfo republicDefsGetter = AccessTools.PropertyGetter(typeof(DefDatabase<RepublicDef>), nameof(DefDatabase<RepublicDef>.AllDefs));
+    //private static readonly MethodInfo republicDefsGetterReplacement = AccessTools.Method(typeof(RepublicState), nameof(RepublicState.GetRepublicDefAsList));
+    //private static readonly FieldInfo partsField = AccessTools.Field(typeof(RepublicDef), nameof(RepublicDef.parts));
+    //private static readonly MethodInfo partsReplacement = AccessTools.Method(typeof(Patch_Reroute_VFEC_Calls), nameof(Patch_Reroute_VFEC_Calls.PartReplacement));
 
     public static void Apply()
     {
@@ -33,7 +43,7 @@ public static class Patch_ModExtension
 
         Log.Message("[Custom Republic] Using assembly: " + vfecAssembly.FullName);
 
-        var types = vfecAssembly.GetTypes();
+        var types = GetAllTypes(vfecAssembly);
         foreach (var type in types)
         {
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
@@ -43,7 +53,7 @@ public static class Patch_ModExtension
                 if (method.IsAbstract || method.IsGenericMethodDefinition || method.DeclaringType.Assembly != vfecAssembly) continue;
 
                 //Log.Message("[Custom Republic] Checking method " + method.FullDescription());
-                var transpiler = new HarmonyMethod(typeof(Patch_ModExtension), nameof(Transpiler));
+                var transpiler = new HarmonyMethod(typeof(Patch_Reroute_VFEC_Calls), nameof(Transpiler));
                 try
                 {
                    CustomRepublicMod.Harmony.Patch(method, transpiler: transpiler);
@@ -60,7 +70,7 @@ public static class Patch_ModExtension
                 if (ctor.IsAbstract || ctor.IsGenericMethodDefinition || ctor.DeclaringType.Assembly != vfecAssembly) continue;
 
                 //Log.Message("[Custom Republic] Checking method " + method.FullDescription());
-                var transpiler = new HarmonyMethod(typeof(Patch_ModExtension), nameof(Transpiler));
+                var transpiler = new HarmonyMethod(typeof(Patch_Reroute_VFEC_Calls), nameof(Transpiler));
                 try
                 {
                     CustomRepublicMod.Harmony.Patch(ctor, transpiler: transpiler);
@@ -75,22 +85,28 @@ public static class Patch_ModExtension
         isApplied = true;
     }
 
+    private static IEnumerable<Type> GetAllTypes(Assembly asm)
+    {
+        foreach (var t in asm.GetTypes())
+        {
+            yield return t;
+            foreach (var nt in GetNestedTypesRecursive(t))
+                yield return nt;
+        }
+    }
+
+    private static IEnumerable<Type> GetNestedTypesRecursive(Type t)
+    {
+        foreach (var nt in t.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
+        {
+            yield return nt;
+            foreach (var nnt in GetNestedTypesRecursive(nt))
+                yield return nnt;
+        }
+    }
+
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
     {
-        var getModExtTarget = AccessTools.Method(typeof(Def), nameof(Def.GetModExtension))
-            .MakeGenericMethod(typeof(FactionExtension_SenatorInfo));
-
-        var hasModExtTarget = AccessTools.Method(typeof(Def), nameof(Def.HasModExtension))
-            .MakeGenericMethod(typeof(FactionExtension_SenatorInfo));
-
-        var getReplacement = AccessTools.Method(
-            typeof(FactionExtension_SenatorInfoExtendedFactory),
-            nameof(FactionExtension_SenatorInfoExtendedFactory.CreateForFactionFromDef));
-
-        var hasReplacement = AccessTools.Method(
-            typeof(Patch_ModExtension),
-            nameof(HasModExtensionReplacement));
-
         foreach (var ci in instructions)
         {
             // Replace GetModExtension<FactionExtension_SenatorInfo>
@@ -102,7 +118,7 @@ public static class Patch_ModExtension
             {
                 Log.Message("[Custom Republic] Replacing GetModExtension<FactionExtension_SenatorInfo> in " + __originalMethod.FullDescription());
                 ci.opcode = OpCodes.Call; // safe for static replacement
-                ci.operand = getReplacement;
+                ci.operand = getModExtReplacement;
             }
 
             // Replace HasModExtension<FactionExtension_SenatorInfo>
@@ -114,13 +130,26 @@ public static class Patch_ModExtension
             {
                 Log.Message("[Custom Republic] Replacing HasModExtension<FactionExtension_SenatorInfo> in " + __originalMethod.FullDescription());
                 ci.opcode = OpCodes.Call;
-                ci.operand = hasReplacement;
+                ci.operand = hasModExtReplacement;
             }
+
+            //if (ci.LoadsField(partsField))
+            //{
+            //    Log.Message("[Custom Republic]: Replacing RepublicDef.parts access with RepublicState.GetFactionDefs in " + __originalMethod.FullDescription());
+            //    yield return new CodeInstruction(OpCodes.Call, partsReplacement);
+            //}
+
+            //// Replace DefDatabase<RepublicDef>.AllDefs
+            //if (ci.opcode == OpCodes.Call && ci.operand is MethodInfo mi3 && mi3 == republicDefsGetter)
+            //{
+            //    Log.Message("[Custom Republic] Replacing DefDatabase<RepublicDef>.AllDefs call in " + __originalMethod.FullDescription());
+            //    ci.opcode = OpCodes.Call; // static method
+            //    ci.operand = republicDefsGetterReplacement;
+            //}
 
             yield return ci;
         }
     }
-
 
     private static bool HasModExtensionReplacement(Def def)
     {
@@ -132,4 +161,12 @@ public static class Patch_ModExtension
             return def.HasModExtension<FactionExtension_SenatorInfoExtended>();
         return state.factionStates.Any(f => f.factionDefName == def.defName) || def.HasModExtension<FactionExtension_SenatorInfoExtended>();
     }
+
+    //private static List<FactionDef> PartReplacement(RepublicDef republicDef)
+    //{
+    //    var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
+    //    if (state == null)
+    //        return republicDef.parts;
+    //    return state.GetFactionDefs(republicDef);
+    //}
 }

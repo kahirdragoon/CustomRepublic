@@ -22,11 +22,10 @@ public class RepublicStateFaction : IExposable
     public string? pawnKindDef = string.Empty;
 
     private FactionExtension_SenatorInfo? _senatorExtension;
-    //public FactionExtension_SenatorInfo? SenatorExtension => RepublicExtensionFactory.CreateForFaction(FactionDef);
+    public FactionExtension_SenatorInfo? SenatorExtension => FactionExtension_SenatorInfoExtendedFactory.CreateForFaction(FactionDef);
 
     public void ExposeData()
     {
-#pragma warning disable CS8601 // Possible null reference assignment.
         Scribe_Values.Look(ref factionDefName, "factionDef");
         Scribe_Values.Look(ref numSenators, "numSenators");
 
@@ -37,7 +36,6 @@ public class RepublicStateFaction : IExposable
         Scribe_Values.Look(ref finalResearch, "finalResearch");
 
         Scribe_Values.Look(ref pawnKindDef, "pawnKindDef");
-#pragma warning restore CS8601 // Possible null reference assignment.
 
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {

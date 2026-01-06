@@ -25,7 +25,6 @@ public static class FactionExtension_SenatorInfoExtendedFactory
             Log.Warning($"[Custom Republic] NULL Faction");
             return (FactionExtension_SenatorInfoExtended)Empty();
         }
-        Log.Message($"[Custom Republic] (1) Creating senator extension for faction {factionDef.defName}");
 
         var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
 
