@@ -109,7 +109,7 @@ public static class RepublicStateBuilder
             state.factionStates.Add(new RepublicStateFaction
             {
                 factionDefName = factionDef.defName,
-                FactionDef = factionDef,
+                factionDef = factionDef,
                 numSenators = numSenators,
                 senatorPerks = senatorPerks,
                 finalPerk = finalPerk,
@@ -178,7 +178,7 @@ public static class RepublicStateBuilder
         return new RepublicStateFaction
         {
             factionDefName = factionDef.defName,
-            FactionDef = factionDef,
+            factionDef = factionDef,
             numSenators = numSenators,
             senatorPerks = senatorPerks,
             finalPerk = finalPerk,

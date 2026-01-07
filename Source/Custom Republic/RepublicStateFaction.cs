@@ -9,7 +9,7 @@ namespace CustomRepublic;
 public class RepublicStateFaction : IExposable
 {
     public string factionDefName = string.Empty;
-    public FactionDef? FactionDef;
+    public FactionDef? factionDef;
 
     public int numSenators;
 
@@ -22,7 +22,7 @@ public class RepublicStateFaction : IExposable
     public string? pawnKindDef = string.Empty;
 
     private FactionExtension_SenatorInfo? _senatorExtension;
-    public FactionExtension_SenatorInfo? SenatorExtension => FactionExtension_SenatorInfoExtendedFactory.CreateForFaction(FactionDef);
+    public FactionExtension_SenatorInfo? SenatorExtension => FactionExtension_SenatorInfoExtendedFactory.CreateForFaction(factionDef);
 
     public void ExposeData()
     {
@@ -41,9 +41,9 @@ public class RepublicStateFaction : IExposable
         {
             senatorPerks ??= new List<string>();
             senatorResearch ??= new List<string>();
-            if(FactionDef == null && !string.IsNullOrEmpty(factionDefName))
+            if(factionDef == null && !string.IsNullOrEmpty(factionDefName))
             {
-                FactionDef = DefDatabase<FactionDef>.GetNamedSilentFail(factionDefName);
+                factionDef = DefDatabase<FactionDef>.GetNamedSilentFail(factionDefName);
             }
         }
     }

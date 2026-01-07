@@ -78,7 +78,7 @@ internal class Patch_WorldComponent_Senators_GainFavorOf
                     republic.customRepublicDef.letterText + "\n" + "VFEC.PerkUnlocked".Translate(republic.customRepublicDef.perk.LabelCap), 
                     LetterDefOf.PositiveEvent);
                 foreach (var factionState in republic.factionStates)
-                    united.Add(Find.FactionManager.FirstFactionOfDef(factionState.FactionDef));
+                    united.Add(Find.FactionManager.FirstFactionOfDef(factionState.factionDef));
             }
 
             var cachedMat = AccessTools.FieldRefAccess<Settlement, Material>("cachedMat");

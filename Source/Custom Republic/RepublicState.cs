@@ -16,7 +16,7 @@ public class RepublicState : IExposable
                 return false;
 
             var activeFactions = factionStates
-                    .Select(factionState => Find.FactionManager.FirstFactionOfDef(factionState.FactionDef))
+                    .Select(factionState => Find.FactionManager.FirstFactionOfDef(factionState.factionDef))
                     .Where(faction => faction != null)
                     .ToList();
 
