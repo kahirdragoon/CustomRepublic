@@ -26,7 +26,7 @@ public class RepublicState : IExposable
     }
     public RepublicDef customRepublicDef = DefDatabase<RepublicDef>.AllDefs.FirstOrDefault(r => r.defName == "VFEC_Republic");
 
-   public bool HasFaction(FactionDef factionDef)
+    public bool HasFaction(FactionDef factionDef)
     {
         return factionStates.Exists(f => f.factionDefName == factionDef.defName);
     }
