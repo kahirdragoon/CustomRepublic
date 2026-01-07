@@ -38,8 +38,7 @@ public class RepublicState : IExposable
         if (!HasFaction(factionDef))
         {
             var numberofSenators = factionStates.Count > 0 ? factionStates[0].numSenators : 3;
-            var senatorPawnKind = DefDatabase<PawnKindDef>.AllDefs.Where(p => p.defaultFactionDef?.defName == factionDef.defName).RandomElement();
-            factionStates.Add(RepublicStateBuilder.BuildFactionState(factionDef, numberofSenators, senatorPawnKind));
+            factionStates.Add(RepublicStateBuilder.BuildFactionState(factionDef, numberofSenators));
         }
     }
 

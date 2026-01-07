@@ -27,10 +27,12 @@ public static class RepublicStateBuilder
             .ToList();
 
         // --- Resolve research projects ---
-        var researchPool = ResolveResearchPool(rules, factionDefs.Count);
+        var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
+            .Where(r => r.knowledgeCost == 0 || r.knowledgeCategory == null);
+        var availableResearch = nonAnomlyResearch.ToList();
 
         // --- Determine available senators ---
-        int availableSenators = Math.Min(researchPool.nonFinal.Count, perkDefs.Count);
+        int availableSenators = Math.Min(1, perkDefs.Count);
 
         int senatorsPerFactionFallback = Math.Max(1, rules.numOfSenatorsPerFaction);
 
@@ -43,12 +45,9 @@ public static class RepublicStateBuilder
         }
 
         int perkIndex = 0;
-        int researchIndex = 0;
-        int finalResearchIndex = 0;
 
-        // Shuffle pools once for randomness
         perkDefs = perkDefs.InRandomOrder().ToList();
-        researchPool.nonFinal = researchPool.nonFinal.InRandomOrder().ToList();
+        
 
         foreach (var factionDef in factionDefs)
         {
@@ -79,15 +78,30 @@ public static class RepublicStateBuilder
             perkIndex = (perkIndex + 1) % perkDefs.Count;
 
             // --- Research ---
-            var senatorResearch = new List<string>();
-            for (int i = 0; i < numSenators; i++)
+            if (availableResearch.Count == 0)
+                availableResearch = nonAnomlyResearch.ToList();
+            var availableFinalResearch = availableResearch
+                .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
+            if (!availableFinalResearch.Any())
+                availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
+            if (!availableFinalResearch.Any())
             {
-                senatorResearch.Add(researchPool.nonFinal[researchIndex].defName);
-                researchIndex = (researchIndex + 1) % researchPool.nonFinal.Count;
+                Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
+                return;
             }
+            var finalResearch = availableFinalResearch.RandomElement();
+            availableResearch.Remove(finalResearch);
 
-            string finalResearch = researchPool.final[finalResearchIndex].defName;
-            finalResearchIndex = (finalResearchIndex + 1) % researchPool.final.Count;
+            if (availableResearch.Count < numSenators)
+                availableResearch = nonAnomlyResearch.ToList();
+            var availableSenatorResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
+            if (availableSenatorResearch.Count() < numSenators)
+            {
+                Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
+                return;
+            }
+            var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
+            availableResearch.RemoveAll(r => senatorResearch.Contains(r));
 
             // --- PawnKind ---
             rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var pawnKindDef);
@@ -99,101 +113,67 @@ public static class RepublicStateBuilder
                 numSenators = numSenators,
                 senatorPerks = senatorPerks,
                 finalPerk = finalPerk,
-                senatorResearch = senatorResearch,
-                finalResearch = finalResearch,
+                senatorResearch = senatorResearch.Select(r => r.defName).ToList(),
+                finalResearch = finalResearch.defName,
                 pawnKindDef = pawnKindDef,
             });
         }
     }
 
-    private static (List<ResearchProjectDef> nonFinal, List<ResearchProjectDef> final) ResolveResearchPool(RepublicRules rules, int factionCount)
-    {
-        bool useAllTechLevels = rules.allowedTechLevels == null || rules.allowedTechLevels.Count == 0;
-
-        var allAllowed = DefDatabase<ResearchProjectDef>.AllDefsListForReading
-            .Where(r => (useAllTechLevels ||  rules.allowedTechLevels!.Contains(r.techLevel)) && r.tab != ResearchTabDefOf.Anomaly)
-            .ToList();
-
-        var techprint = allAllowed.Where(r => r.techprintCount > 0).ToList();
-        var nonTechprint = allAllowed.Except(techprint).ToList();
-
-        var final = new List<ResearchProjectDef>();
-
-        if (rules.onlyTechprintResearch)
-        {
-            final.AddRange(techprint.Take(factionCount));
-            techprint.RemoveRange(0, Math.Min(factionCount, techprint.Count));
-        }
-        else if (rules.prioritizeTechprintResearch)
-        {
-            final.AddRange(techprint.Take(factionCount));
-            techprint.RemoveRange(0, Math.Min(factionCount, techprint.Count));
-
-            if (final.Count < factionCount)
-            {
-                int needed = factionCount - final.Count;
-                final.AddRange(nonTechprint.Take(needed));
-                nonTechprint.RemoveRange(0, Math.Min(needed, nonTechprint.Count));
-            }
-        }
-        else
-        {
-            final.AddRange(allAllowed.Take(factionCount));
-            foreach (var r in final)
-                nonTechprint.Remove(r);
-        }
-
-        var nonFinal = techprint.Concat(nonTechprint).ToList();
-
-        if (final.Count == 0 && nonFinal.Count > 0)
-            final.Add(nonFinal[0]);
-
-        return (nonFinal, final);
-    }
-
-    public static RepublicStateFaction BuildFactionState(FactionDef factionDef, int numSenators, PawnKindDef? senatorPawnKind = null)
+    public static RepublicStateFaction BuildFactionState(FactionDef factionDef, int numSenators)
     {
         var rules = Current.Game.GetComponent<GameComponent_Republic>().rules;
 
         rules.selectedFactionDefs.Add(factionDef.defName);
 
-        var perkDefs = rules.selectedPerkDefs
+        var availablePerkDefs = rules.selectedPerkDefs
             .Select(DefDatabase<PerkDef>.GetNamedSilentFail)
             .Where(p => p != null)
             .ToList();
 
-        var researchPool = ResolveResearchPool(rules, 1);
-
-        int perkIndex = 0;
-        int researchIndex = 0;
-        int finalResearchIndex = 0;
-
-        perkDefs = perkDefs.InRandomOrder().ToList();
-        researchPool.nonFinal = researchPool.nonFinal.InRandomOrder().ToList();
-
         numSenators = Math.Min(numSenators, 5);
-        
-        var senatorPerks = new List<string>();
-        for (int i = 0; i < numSenators; i++)
+        var numPerksNeeded = numSenators + 1;
+
+        var republicFactions = Current.Game.GetComponent<GameComponent_Republic>().state.factionStates;
+        var usedPerks = republicFactions.SelectMany(f => f.senatorPerks).ToHashSet();
+        var perkDefs =  availablePerkDefs.Where(p => !usedPerks.Contains(p.defName)).TakeRandomDistinct(numPerksNeeded).ToList();
+        if (perkDefs.Count < numPerksNeeded)
+            perkDefs.AddRange(perkDefs.TakeRandom(numPerksNeeded - perkDefs.Count));
+        var senatorPerks = perkDefs.Take(numSenators).Select(p => p.defName).ToList();
+        string finalPerk = perkDefs.TakeLast(1).First().defName;
+
+        // --- Research ---
+        var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
+            .Where(r => r.knowledgeCost == 0 || r.knowledgeCategory == null);
+        var availableResearch = nonAnomlyResearch.ToList();
+        if (availableResearch.Count == 0)
+            availableResearch = nonAnomlyResearch.ToList();
+        var availableFinalResearch = availableResearch
+            .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
+        if (!availableFinalResearch.Any())
+            availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
+        if (!availableFinalResearch.Any())
         {
-            senatorPerks.Add(perkDefs[perkIndex].defName);
-            perkIndex = (perkIndex + 1) % perkDefs.Count;
+            Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
         }
+        var finalResearch = availableFinalResearch
+            .RandomElement();
+        availableResearch.Remove(finalResearch);
 
-        string finalPerk = perkDefs[perkIndex].defName;
-        perkIndex = (perkIndex + 1) % perkDefs.Count;
-
-        var senatorResearch = new List<string>();
-        for (int i = 0; i < numSenators; i++)
+        if (availableResearch.Count < numSenators)
+            availableResearch = nonAnomlyResearch.ToList();
+        var availableSenatorResearch = availableResearch
+            .Where(r => r.techLevel == factionDef.techLevel);
+        if (availableSenatorResearch.Count() < numSenators)
         {
-            senatorResearch.Add(researchPool.nonFinal[researchIndex].defName);
-            researchIndex = (researchIndex + 1) % researchPool.nonFinal.Count;
+            Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
         }
+        var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
+        availableResearch.RemoveAll(r => senatorResearch.Contains(r));
 
-        string finalResearch = researchPool.final[finalResearchIndex].defName;
-        finalResearchIndex = (finalResearchIndex + 1) % researchPool.final.Count;
-
-        rules.pawnKindPerFaction[factionDef.defName] = senatorPawnKind?.defName;
+        Log.Message($"[Custom Republic] Built faction state for {factionDef.defName} with {numSenators} senators.");
+        rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var senatorPawnKind);
+        Log.Message($"[Custom Republic] Assigned pawn kind {senatorPawnKind} to faction {factionDef.defName}.");
 
         return new RepublicStateFaction
         {
@@ -202,9 +182,9 @@ public static class RepublicStateBuilder
             numSenators = numSenators,
             senatorPerks = senatorPerks,
             finalPerk = finalPerk,
-            senatorResearch = senatorResearch,
-            finalResearch = finalResearch,
-            pawnKindDef = senatorPawnKind?.defName,
+            senatorResearch = senatorResearch.Select(r => r.defName).ToList(),
+            finalResearch = finalResearch.defName,
+            pawnKindDef = senatorPawnKind
         };
     }
 }

@@ -41,7 +41,7 @@ internal static class Patch_Reroute_VFEC_Calls
             return;
         }
 
-        Log.Message("[Custom Republic] Using assembly: " + vfecAssembly.FullName);
+        //Log.Message("[Custom Republic] Using assembly: " + vfecAssembly.FullName);
 
         var types = GetAllTypes(vfecAssembly);
         foreach (var type in types)
@@ -116,7 +116,7 @@ internal static class Patch_Reroute_VFEC_Calls
                 mi.GetGenericMethodDefinition() == AccessTools.Method(typeof(Def), nameof(Def.GetModExtension)) &&
                 mi.GetGenericArguments()[0] == typeof(FactionExtension_SenatorInfo))
             {
-                Log.Message("[Custom Republic] Replacing GetModExtension<FactionExtension_SenatorInfo> in " + __originalMethod.FullDescription());
+                //Log.Message("[Custom Republic] Replacing GetModExtension<FactionExtension_SenatorInfo> in " + __originalMethod.FullDescription());
                 ci.opcode = OpCodes.Call; // safe for static replacement
                 ci.operand = getModExtReplacement;
             }
@@ -128,7 +128,7 @@ internal static class Patch_Reroute_VFEC_Calls
                 mi2.GetGenericMethodDefinition() == AccessTools.Method(typeof(Def), nameof(Def.HasModExtension)) &&
                 mi2.GetGenericArguments()[0] == typeof(FactionExtension_SenatorInfo))
             {
-                Log.Message("[Custom Republic] Replacing HasModExtension<FactionExtension_SenatorInfo> in " + __originalMethod.FullDescription());
+                //Log.Message("[Custom Republic] Replacing HasModExtension<FactionExtension_SenatorInfo> in " + __originalMethod.FullDescription());
                 ci.opcode = OpCodes.Call;
                 ci.operand = hasModExtReplacement;
             }

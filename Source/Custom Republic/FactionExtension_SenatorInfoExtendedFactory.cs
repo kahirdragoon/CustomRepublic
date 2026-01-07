@@ -33,7 +33,6 @@ public static class FactionExtension_SenatorInfoExtendedFactory
 
     public static FactionExtension_SenatorInfo CreateForFaction(FactionDef factionDef, RepublicState? state)
     {
-        Log.Message($"[Custom Republic] (2) Creating senator extension for faction {factionDef.defName}");
         if (cache.TryGetValue(factionDef.defName, out var ext))
             return ext;
 

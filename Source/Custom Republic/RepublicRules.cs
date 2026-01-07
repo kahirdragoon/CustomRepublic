@@ -8,9 +8,7 @@ public class RepublicRules : IExposable
     public int numOfSenatorsPerFaction = 3;
     public bool autoCalculateSenatorsPerFaction;
 
-    public HashSet<TechLevel> allowedTechLevels = new();
-    public bool prioritizeTechprintResearch;
-    public bool onlyTechprintResearch;
+    public bool ignoreTechprintResearch;
 
     public List<string> selectedFactionDefs = new();
     public List<string> selectedPerkDefs = new();
@@ -22,9 +20,7 @@ public class RepublicRules : IExposable
         Scribe_Values.Look(ref numOfSenatorsPerFaction, "senatorsPerFaction");
         Scribe_Values.Look(ref autoCalculateSenatorsPerFaction, "autoCalculateNumberOfSenators");
 
-        Scribe_Values.Look(ref prioritizeTechprintResearch, "prioritizeTechprintResearch");
-        Scribe_Collections.Look(ref allowedTechLevels, "allowedTechLevels", LookMode.Value);
-        Scribe_Values.Look(ref onlyTechprintResearch, "onlyTechprintResearch");
+        Scribe_Values.Look(ref ignoreTechprintResearch, "ignoreTechprintResearch");
 
         Scribe_Collections.Look(ref selectedFactionDefs, "selectedFactionDefs", LookMode.Value);
 
@@ -34,11 +30,9 @@ public class RepublicRules : IExposable
 
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
-            allowedTechLevels ??= new HashSet<TechLevel>();
             selectedFactionDefs ??= new List<string>();
             selectedPerkDefs ??= new List<string>();
             pawnKindPerFaction ??= new Dictionary<string, string?>();
         }
-
     }
 }

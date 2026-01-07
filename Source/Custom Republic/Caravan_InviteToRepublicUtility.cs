@@ -9,6 +9,8 @@ using UnityEngine;
 using Verse;
 
 namespace CustomRepublic;
+
+[StaticConstructorOnStartup]
 internal class Caravan_InviteToRepublicUtility
 {
     private static readonly Texture2D InviteToRepublicCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/Trade");
