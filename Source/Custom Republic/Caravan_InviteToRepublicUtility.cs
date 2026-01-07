@@ -23,9 +23,31 @@ internal class Caravan_InviteToRepublicUtility
             action = () =>
             {
                 var state = Current.Game.GetComponent<GameComponent_Republic>().state;
-                state.AddFaction(faction.def);
+                if (state == null)
+                    return;
+
+                if (!state.HasFaction(faction.def))
+                {
+                    state.AddFaction(faction.def);
+
+                    var letterLabel = "CR.LetterFactionJoinedLabel".Translate(faction.Name);
+                    var letterText = "CR.LetterFactionJoinedDesc".Translate(faction.Name);
+                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
+                }
             } 
         };
+        if(faction.RelationWith(Find.FactionManager.OfPlayer).kind < FactionRelationKind.Ally)
+        {
+            commandAction.Disable("CR.CommandInviteToRepublicFailNotAlly".Translate());
+        }
+        else
+        {
+            var state = Current.Game.GetComponent<GameComponent_Republic>().state;
+            if(state.HasFaction(faction.def))
+            {
+                commandAction.Disable("CR.CommandInviteToRepublicFailAlreadyInRepublic".Translate());
+            }
+        }
 
         return commandAction;
     }
