@@ -9,10 +9,15 @@ namespace CustomRepublic;
 
 public static class RepublicStateBuilder
 {
+    private static ResearchProjectDef dummyResearchProjectDef = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("Stonecutting") ??
+        DefDatabase<ResearchProjectDef>.GetNamedSilentFail("PassiveCooler") ??
+        DefDatabase<ResearchProjectDef>.GetNamedSilentFail("Brewing");
+
     public static void BuildFromRules()
     {
         var comp = Current.Game.GetComponent<GameComponent_Republic>();
         var rules = comp.rules;
+        comp.state = new();
         var state = comp.state;
 
         // --- Resolve defs from rules ---
@@ -28,7 +33,7 @@ public static class RepublicStateBuilder
 
         // --- Resolve research projects ---
         var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
-            .Where(r => r.knowledgeCost == 0 || r.knowledgeCategory == null);
+            .Where(r => (r.knowledgeCost == 0 || r.knowledgeCategory == null) && r != dummyResearchProjectDef);
         var availableResearch = nonAnomlyResearch.ToList();
 
         // --- Determine available senators ---
@@ -78,30 +83,39 @@ public static class RepublicStateBuilder
             perkIndex = (perkIndex + 1) % perkDefs.Count;
 
             // --- Research ---
-            if (availableResearch.Count == 0)
-                availableResearch = nonAnomlyResearch.ToList();
-            var availableFinalResearch = availableResearch
-                .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
-            if (!availableFinalResearch.Any())
-                availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
-            if (!availableFinalResearch.Any())
+            string finalResearchDefName = dummyResearchProjectDef.defName;
+            List<string> senatorResearchDefNames = Enumerable.Repeat(dummyResearchProjectDef.defName, numSenators).ToList();
+                
+            if(!rules.useDummyResearch)
             {
-                Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
-                return;
-            }
-            var finalResearch = availableFinalResearch.RandomElement();
-            availableResearch.Remove(finalResearch);
+                if (availableResearch.Count == 0)
+                    availableResearch = nonAnomlyResearch.ToList();
+                var availableFinalResearch = availableResearch
+                    .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
+                if (!availableFinalResearch.Any())
+                    availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
+                if (!availableFinalResearch.Any())
+                {
+                    Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
+                    return;
+                }
+                var finalResearch = availableFinalResearch.RandomElement();
+                availableResearch.Remove(finalResearch);
 
-            if (availableResearch.Count < numSenators)
-                availableResearch = nonAnomlyResearch.ToList();
-            var availableSenatorResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
-            if (availableSenatorResearch.Count() < numSenators)
-            {
-                Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
-                return;
+                if (availableResearch.Count < numSenators)
+                    availableResearch = nonAnomlyResearch.ToList();
+                var availableSenatorResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
+                if (availableSenatorResearch.Count() < numSenators)
+                {
+                    Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
+                    return;
+                }
+                var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
+                availableResearch.RemoveAll(r => senatorResearch.Contains(r));
+
+                finalResearchDefName = finalResearch.defName;
+                senatorResearchDefNames = senatorResearch.Select(r => r.defName).ToList();
             }
-            var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
-            availableResearch.RemoveAll(r => senatorResearch.Contains(r));
 
             // --- PawnKind ---
             rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var pawnKindDef);
@@ -113,8 +127,8 @@ public static class RepublicStateBuilder
                 numSenators = numSenators,
                 senatorPerks = senatorPerks,
                 finalPerk = finalPerk,
-                senatorResearch = senatorResearch.Select(r => r.defName).ToList(),
-                finalResearch = finalResearch.defName,
+                senatorResearch = senatorResearchDefNames,
+                finalResearch = finalResearchDefName,
                 pawnKindDef = pawnKindDef,
             });
         }
@@ -143,37 +157,42 @@ public static class RepublicStateBuilder
         string finalPerk = perkDefs.TakeLast(1).First().defName;
 
         // --- Research ---
-        var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
-            .Where(r => r.knowledgeCost == 0 || r.knowledgeCategory == null);
-        var availableResearch = nonAnomlyResearch.ToList();
-        if (availableResearch.Count == 0)
-            availableResearch = nonAnomlyResearch.ToList();
-        var availableFinalResearch = availableResearch
-            .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
-        if (!availableFinalResearch.Any())
-            availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
-        if (!availableFinalResearch.Any())
-        {
-            Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
-        }
-        var finalResearch = availableFinalResearch
-            .RandomElement();
-        availableResearch.Remove(finalResearch);
+        string finalResearchDefName = dummyResearchProjectDef.defName;
+        List<string> senatorResearchDefNames = Enumerable.Repeat(dummyResearchProjectDef.defName, numSenators).ToList();
 
-        if (availableResearch.Count < numSenators)
-            availableResearch = nonAnomlyResearch.ToList();
-        var availableSenatorResearch = availableResearch
-            .Where(r => r.techLevel == factionDef.techLevel);
-        if (availableSenatorResearch.Count() < numSenators)
+        if (!rules.useDummyResearch)
         {
-            Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
-        }
-        var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
-        availableResearch.RemoveAll(r => senatorResearch.Contains(r));
+            var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
+                .Where(r => (r.knowledgeCost == 0 || r.knowledgeCategory == null) && r != dummyResearchProjectDef);
+            var availableResearch = nonAnomlyResearch.ToList();
+            if (availableResearch.Count == 0)
+                availableResearch = nonAnomlyResearch.ToList();
+            var availableFinalResearch = availableResearch
+                .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
+            if (!availableFinalResearch.Any())
+                availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
+            if (!availableFinalResearch.Any())
+            {
+                Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
+            }
+            var finalResearch = availableFinalResearch
+                .RandomElement();
+            availableResearch.Remove(finalResearch);
 
-        Log.Message($"[Custom Republic] Built faction state for {factionDef.defName} with {numSenators} senators.");
+            if (availableResearch.Count < numSenators)
+                availableResearch = nonAnomlyResearch.ToList();
+            var availableSenatorResearch = availableResearch
+                .Where(r => r.techLevel == factionDef.techLevel);
+            if (availableSenatorResearch.Count() < numSenators)
+            {
+                Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
+            }
+            var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
+            availableResearch.RemoveAll(r => senatorResearch.Contains(r));
+
+        }
+
         rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var senatorPawnKind);
-        Log.Message($"[Custom Republic] Assigned pawn kind {senatorPawnKind} to faction {factionDef.defName}.");
 
         return new RepublicStateFaction
         {
@@ -182,8 +201,8 @@ public static class RepublicStateBuilder
             numSenators = numSenators,
             senatorPerks = senatorPerks,
             finalPerk = finalPerk,
-            senatorResearch = senatorResearch.Select(r => r.defName).ToList(),
-            finalResearch = finalResearch.defName,
+            senatorResearch = senatorResearchDefNames,
+            finalResearch = finalResearchDefName,
             pawnKindDef = senatorPawnKind
         };
     }

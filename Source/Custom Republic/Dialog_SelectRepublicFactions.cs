@@ -17,6 +17,7 @@ public class Dialog_SelectRepublicFactions : Window
     private int selectedFactionsCount => selectedFactions.Values.Count(v => v);
 
     private bool ignoreTechprintResearch = true;
+    private bool useDummyResearch = false;
     private List<ResearchProjectDef> nonFinalResearchProjects = new();
     private List<ResearchProjectDef> finalReasearchProjects = new();
    
@@ -50,10 +51,11 @@ public class Dialog_SelectRepublicFactions : Window
 
                 PawnKindDef? pawnKind = null;
                 if (rules?.pawnKindPerFaction != null &&
-                    rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var pawnKindDefName))
+                    rules.pawnKindPerFaction.TryGetValue(factionDef.defName, out var pawnKindDefName) &&
+                    !string.IsNullOrEmpty(pawnKindDefName))
                 {
-                    pawnKind = DefDatabase<PawnKindDef>.GetNamedSilentFail(pawnKindDefName);
-                }
+                        pawnKind = DefDatabase<PawnKindDef>.GetNamedSilentFail(pawnKindDefName);
+                } 
 
                 selectedFactionPawnKinds[factionDef] = pawnKind;
             }
@@ -70,8 +72,9 @@ public class Dialog_SelectRepublicFactions : Window
         if (rules != null)
         {
             ignoreTechprintResearch = rules.ignoreTechprintResearch;
+            useDummyResearch = rules.useDummyResearch;
 
-            if(rules.numOfSenatorsPerFaction > 0)
+            if (rules.numOfSenatorsPerFaction > 0)
                 numOfSenatorsPerfaction = rules.numOfSenatorsPerFaction;
         }
     }
@@ -114,6 +117,10 @@ public class Dialog_SelectRepublicFactions : Window
         float y = panel.y + 5f;
         var ignoreTechprintRect = new Rect(panel.x + 5f, y + 5f, panel.width - 13f, 28f);
         Widgets.CheckboxLabeled(ignoreTechprintRect, "Ignore Techprint-Locked Research", ref ignoreTechprintResearch);
+
+        y += 30f;
+        var useDummyRect = new Rect(panel.x + 5f, y + 5f, panel.width - 13f, 28f);
+        Widgets.CheckboxLabeled(useDummyRect, "Use Dummy Research Project", ref useDummyResearch);
     }
 
     private void AddFactionPanel(Rect panel)
@@ -287,6 +294,7 @@ public class Dialog_SelectRepublicFactions : Window
     {
         var comp = Current.Game.GetComponent<GameComponent_Republic>();
         comp.rules.ignoreTechprintResearch = ignoreTechprintResearch;
+        comp.rules.useDummyResearch = useDummyResearch;
         comp.rules.numOfSenatorsPerFaction = numOfSenatorsPerfaction;
         comp.rules.selectedFactionDefs = selectedFactions.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName).ToList();
         comp.rules.pawnKindPerFaction = selectedFactionPawnKinds

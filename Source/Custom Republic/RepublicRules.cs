@@ -9,6 +9,7 @@ public class RepublicRules : IExposable
     public bool autoCalculateSenatorsPerFaction;
 
     public bool ignoreTechprintResearch;
+    public bool useDummyResearch;
 
     public List<string> selectedFactionDefs = new();
     public List<string> selectedPerkDefs = new();
@@ -21,6 +22,7 @@ public class RepublicRules : IExposable
         Scribe_Values.Look(ref autoCalculateSenatorsPerFaction, "autoCalculateNumberOfSenators");
 
         Scribe_Values.Look(ref ignoreTechprintResearch, "ignoreTechprintResearch");
+        Scribe_Values.Look(ref useDummyResearch, "useDummyResearch");
 
         Scribe_Collections.Look(ref selectedFactionDefs, "selectedFactionDefs", LookMode.Value);
 
