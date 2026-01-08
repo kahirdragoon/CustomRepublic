@@ -6,7 +6,7 @@ using Verse;
 
 namespace CustomRepublic;
 [HarmonyPatch(typeof(Page_CreateWorldParams), nameof(Page_CreateWorldParams.DoWindowContents))]
-internal static class Patch_RepublicButton
+internal static class Patch_Page_CreateWorldParams_RepublicButton
 {
     static void Postfix(Page_CreateWorldParams __instance, Rect rect)
     {
@@ -15,7 +15,7 @@ internal static class Patch_RepublicButton
 
         var factions = (List<FactionDef>)factionsField.GetValue(__instance);
 
-        if (Widgets.ButtonText(buttonRect, "CustomizeRepublic".Translate()))
+        if (Widgets.ButtonText(buttonRect, "CR.CustomizeRepublicButton".Translate()))
         {
             Find.WindowStack.Add(new Dialog_SelectRepublicFactions(factions));
         }

@@ -111,7 +111,7 @@ public class Dialog_SelectRepublicFactions : Window
 
         AddInformationalDisplay(ref inRect, ref curY);
 
-        if (Widgets.ButtonText(new Rect(inRect.width - 200f, inRect.height - 40f, 190f, 35f), "Accept".Translate()))
+        if (Widgets.ButtonText(new Rect(inRect.width - 200f, inRect.height - 40f, 190f, 35f), "CR.ButtonAccept".Translate()))
         {
             SaveSelections();
             Close();
@@ -122,13 +122,13 @@ public class Dialog_SelectRepublicFactions : Window
     {
         float y = panel.y + 5f;
         var ignoreTechprintRect = new Rect(padding + panel.x + 5f, y + 5f, panel.width - 13f, 28f);
-        Widgets.CheckboxLabeled(ignoreTechprintRect, "Ignore Techprint-Locked Research", ref ignoreTechprintResearch);
-        TooltipHandler.TipRegion(ignoreTechprintRect, "If enabled, techprint-locked research projects will be ignored when distributing research among senators.");
+        Widgets.CheckboxLabeled(ignoreTechprintRect, "CR.IgnoreTechprintResearch".Translate(), ref ignoreTechprintResearch);
+        TooltipHandler.TipRegion(ignoreTechprintRect, "CR.IgnoreTechprintResearchDesc".Translate());
 
         y += 30f;
         var useDummyRect = new Rect(padding + panel.x + 5f, y + 5f, panel.width - 13f, 28f);
-        Widgets.CheckboxLabeled(useDummyRect, "Use Dummy Research Project", ref useDummyResearch);
-        TooltipHandler.TipRegion(useDummyRect, "If enabled, a simple neolethic research project will be used for senators. This effectivly disables getting research for senators.");
+        Widgets.CheckboxLabeled(useDummyRect, "CR.UseDummyResearch".Translate(), ref useDummyResearch);
+        TooltipHandler.TipRegion(useDummyRect, "CR.UseDummyResearchDesc".Translate());
     }
 
     private void AddFactionPanel(Rect panel)
@@ -138,11 +138,11 @@ public class Dialog_SelectRepublicFactions : Window
         // --- Header ---
         float headerHeight = 30f;
         Rect headerRect = new Rect(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
-        Widgets.Label(headerRect, "Select republic factions");
+        Widgets.Label(headerRect, "CR.SelectRepublicFactions".Translate());
 
         // Senator PawnKind header label (placed on same line as header)
         Rect pawnHeaderRect = new Rect(headerRect.x + 240f, headerRect.y, 150f, headerRect.height);
-        Widgets.Label(pawnHeaderRect, "Senator PawnKind");
+        Widgets.Label(pawnHeaderRect, "CR.SenatorPawnKindHeader".Translate());
 
         // --- Footer ---
         float footerHeight = 25f;
@@ -178,13 +178,13 @@ public class Dialog_SelectRepublicFactions : Window
                 // Display note that data comes from ModExtension
                 float dropdownX = headerRect.x + 220f;
                 Rect modLabelRect = new Rect(dropdownX, y + 4f, 300f, rowHeight - 8f);
-                Widgets.Label(modLabelRect, "Data defined by ModExtension");
+                Widgets.Label(modLabelRect, "CR.DataDefinedByModExtension".Translate());
             }
             else
             {
                 // PawnKind dropdown (aligned under the header label)
                 var current = selectedFactionPawnKinds[faction];
-                string pawnLabel = current != null ? current.LabelCap : "Default";
+                string pawnLabel = current != null ? current.LabelCap : "CR.Default".Translate();
 
                 float pawnWidth = 120f;
                 // Calculate dropdown X relative to panel so it lines up with pawnHeaderRect
@@ -200,7 +200,7 @@ public class Dialog_SelectRepublicFactions : Window
         Widgets.EndScrollView();
 
         // --- Footer label ---
-        Widgets.Label(footerRect, $"Selected factions: {selectedFactionsCount}");
+        Widgets.Label(footerRect, "CR.SelectedFactions".Translate(selectedFactionsCount));
     }
 
     private void AddPerkPanel(Rect panel)
@@ -210,7 +210,7 @@ public class Dialog_SelectRepublicFactions : Window
         // --- Header ---
         float headerHeight = 30f;
         Rect headerRect = new Rect(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
-        Widgets.Label(headerRect, "Select available perks for random distribution");
+        Widgets.Label(headerRect, "CR.SelectAvailablePerks".Translate());
 
         // --- Footer ---
         float footerHeight = 25f;
@@ -247,13 +247,13 @@ public class Dialog_SelectRepublicFactions : Window
         Widgets.EndScrollView();
 
         // --- Footer label ---
-        Widgets.Label(footerRect, $"Selected Perks: {selectedPerksCount}");
+        Widgets.Label(footerRect, "CR.SelectedPerks".Translate(selectedPerksCount));
     }
 
     private void AddSenatorDistribution(Rect inRect, float curY)
     {
         // Slider label
-        Widgets.Label(new Rect(padding, curY, 350f, 30f), "Number of senators per faction: " + numOfSenatorsPerfaction);
+        Widgets.Label(new Rect(padding, curY, 350f, 30f), "CR.NumberOfSenatorsPerFaction".Translate(numOfSenatorsPerfaction));
 
         Rect sliderRect = new Rect(padding, curY + 25f, inRect.width - 20f, 28f);
 
@@ -274,18 +274,18 @@ public class Dialog_SelectRepublicFactions : Window
     {
         curY += 30f;
         var totalNumberOfSenators = selectedFactionsCount * numOfSenatorsPerfaction;
-        Widgets.Label(new Rect(padding, curY, inRect.width, 25f), $"Total number of Senators is {totalNumberOfSenators}. Perks/Research Projects will be randomly distributet among them.");
+        Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.TotalNumberOfSenators".Translate(totalNumberOfSenators));
         curY += 30f;
         if(totalNumberOfSenators > selectedPerksCount)
-            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "More senators than perks. Some perks will be added multiple times bridge the gap.");
+            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.MoreSenatorsThanPerks".Translate());
         curY += 30f;
         if (totalNumberOfSenators < selectedPerksCount)
-            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "Less senators than perks. Not all selected perks will be available.");
+            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.LessSenatorsThanPerks".Translate());
         curY += 30f;
 
         if(selectedFactionsCount > 7)
         {
-            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "<color=yellow>More than 7 factions selected. The perk overview dialog may not display all factions correctly.</color>");
+            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.MoreThan7FactionsWarning".Translate());
             curY += 30f;
         }
     }
@@ -294,7 +294,7 @@ public class Dialog_SelectRepublicFactions : Window
     {
         var opts = new List<FloatMenuOption>();
 
-        opts.Add(new FloatMenuOption("Default", () =>
+        opts.Add(new FloatMenuOption("CR.Default".Translate(), () =>
         {
             selectedFactionPawnKinds[factionDef] = null;
         }));

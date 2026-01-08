@@ -8,16 +8,6 @@ public class GameComponent_Republic : GameComponent
     public RepublicState state = new();
     public RepublicRules rules = new();
 
-    private static bool Patched;
-
-    public GameComponent_Republic(Game game) : base()
-    {
-        if(Patched) return;
-        CustomRepublicMod.Harmony.PatchAll();
-        Patch_Reroute_VFEC_Calls.Apply();
-        Patched = true;
-    }
-
     public override void LoadedGame()
     {
         EnsureInitialized();

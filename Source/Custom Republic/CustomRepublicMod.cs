@@ -14,5 +14,11 @@ internal class CustomRepublicMod : Mod
     public CustomRepublicMod(ModContentPack content) : base(content)
     {
         Harmony = new Harmony("kahirdragoon.customrepublic");
+
+        LongEventHandler.ExecuteWhenFinished(() =>
+        {
+            Harmony.PatchAll();
+            Patch_Reroute_VFEC_Calls.Apply();
+        });
     }
 }
