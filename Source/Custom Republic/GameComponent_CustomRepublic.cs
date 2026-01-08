@@ -8,6 +8,10 @@ public class GameComponent_Republic : GameComponent
     public RepublicState state = new();
     public RepublicRules rules = new();
 
+    public GameComponent_Republic(Game game) : base()
+    {
+    }
+
     public override void LoadedGame()
     {
         EnsureInitialized();

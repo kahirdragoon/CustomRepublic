@@ -29,7 +29,7 @@
         <defName>CR_MagisterAgriculturae</defName>
         <description>Plant work speed increased by 20% if the pawn is in a positive mood.</description>
         <!-- <texPath>UI/Perks/Perk_MagisterAgriculturae</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_MagisterAgriculturae</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <PlantWorkSpeed>0.2</PlantWorkSpeed>
