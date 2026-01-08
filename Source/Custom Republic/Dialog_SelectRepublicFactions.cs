@@ -15,6 +15,7 @@ public class Dialog_SelectRepublicFactions : Window
     private Dictionary<FactionDef, bool> selectedFactions = new();
     private Dictionary<FactionDef, PawnKindDef?> selectedFactionPawnKinds = new();
     private int selectedFactionsCount => selectedFactions.Values.Count(v => v);
+    private List<FactionDef> factionDefsWithExtension = new();
 
     private bool ignoreTechprintResearch = true;
     private bool useDummyResearch = false;
@@ -32,6 +33,8 @@ public class Dialog_SelectRepublicFactions : Window
 
     private GameComponent_Republic republicComp;
 
+    private const float padding = 10f;
+
     public Dialog_SelectRepublicFactions(List<FactionDef> existingFactionDefs)
     {
         forcePause = true;
@@ -46,6 +49,9 @@ public class Dialog_SelectRepublicFactions : Window
         {
             if (!factionDef.isPlayer && !factionDef.hidden && !factionDef.permanentEnemy)
             {
+                if(factionDef.HasModExtension<FactionExtension_SenatorInfoExtended>())
+                    factionDefsWithExtension.Add(factionDef);
+
                 bool selected = rules?.selectedFactionDefs?.Contains(factionDef.defName) ?? false;
                 selectedFactions[factionDef] = selected;
 
@@ -81,21 +87,23 @@ public class Dialog_SelectRepublicFactions : Window
 
     public override void DoWindowContents(Rect inRect)
     {
-        float padding = 10f;
         float panelWidth = (inRect.width - 4 * padding) / 3f; // three panels
         float curY = 0f;
         float panelHeight = 400f; // adjust as needed
 
-        var techPanel = new Rect(padding, curY, panelWidth, panelHeight);
-        AddTechPanel(techPanel);
 
-        var factionPanel = new Rect(techPanel.xMax + padding, curY, panelWidth, panelHeight);
+        var factionPanel = new Rect(padding, curY, panelWidth * 2, panelHeight);
         AddFactionPanel(factionPanel);
 
         var perkPanel = new Rect(factionPanel.xMax + padding, curY, panelWidth, panelHeight);
         AddPerkPanel(perkPanel);
 
         curY += panelHeight + padding;
+        
+        var techPanel = new Rect(0, curY, panelWidth, panelHeight);
+        AddTechPanel(techPanel);
+
+        curY += 70f;
 
         AddSenatorDistribution(inRect, curY);
 
@@ -112,15 +120,15 @@ public class Dialog_SelectRepublicFactions : Window
 
     private void AddTechPanel(Rect panel)
     {
-        Widgets.DrawMenuSection(panel);
-
         float y = panel.y + 5f;
-        var ignoreTechprintRect = new Rect(panel.x + 5f, y + 5f, panel.width - 13f, 28f);
+        var ignoreTechprintRect = new Rect(padding + panel.x + 5f, y + 5f, panel.width - 13f, 28f);
         Widgets.CheckboxLabeled(ignoreTechprintRect, "Ignore Techprint-Locked Research", ref ignoreTechprintResearch);
+        TooltipHandler.TipRegion(ignoreTechprintRect, "If enabled, techprint-locked research projects will be ignored when distributing research among senators.");
 
         y += 30f;
-        var useDummyRect = new Rect(panel.x + 5f, y + 5f, panel.width - 13f, 28f);
+        var useDummyRect = new Rect(padding + panel.x + 5f, y + 5f, panel.width - 13f, 28f);
         Widgets.CheckboxLabeled(useDummyRect, "Use Dummy Research Project", ref useDummyResearch);
+        TooltipHandler.TipRegion(useDummyRect, "If enabled, a simple neolethic research project will be used for senators. This effectivly disables getting research for senators.");
     }
 
     private void AddFactionPanel(Rect panel)
@@ -131,6 +139,10 @@ public class Dialog_SelectRepublicFactions : Window
         float headerHeight = 30f;
         Rect headerRect = new Rect(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
         Widgets.Label(headerRect, "Select republic factions");
+
+        // Senator PawnKind header label (placed on same line as header)
+        Rect pawnHeaderRect = new Rect(headerRect.x + 240f, headerRect.y, 150f, headerRect.height);
+        Widgets.Label(pawnHeaderRect, "Senator PawnKind");
 
         // --- Footer ---
         float footerHeight = 25f;
@@ -161,13 +173,26 @@ public class Dialog_SelectRepublicFactions : Window
             Widgets.CheckboxLabeled(new Rect(5f, y, 200f, rowHeight), faction.label, ref selected);
             selectedFactions[faction] = selected;
 
-            // PawnKind dropdown
-            var current = selectedFactionPawnKinds[faction];
-            string label = current != null ? current.LabelCap : "Default";
+            if (factionDefsWithExtension.Contains(faction))
+            {
+                // Display note that data comes from ModExtension
+                float dropdownX = headerRect.x + 220f;
+                Rect modLabelRect = new Rect(dropdownX, y + 4f, 300f, rowHeight - 8f);
+                Widgets.Label(modLabelRect, "Data defined by ModExtension");
+            }
+            else
+            {
+                // PawnKind dropdown (aligned under the header label)
+                var current = selectedFactionPawnKinds[faction];
+                string pawnLabel = current != null ? current.LabelCap : "Default";
 
-            Rect dropRect = new Rect(215f, y + 2f, viewRect.width - 215f, rowHeight - 4f);
-            if (Widgets.ButtonText(dropRect, label))
-                Find.WindowStack.Add(new FloatMenu(GeneratePawnKindOptions(faction)));
+                float pawnWidth = 120f;
+                // Calculate dropdown X relative to panel so it lines up with pawnHeaderRect
+                float dropdownX = headerRect.x + 220f;
+                Rect dropRect = new Rect(dropdownX, y + 4f, pawnWidth, rowHeight - 8f);
+                if (Widgets.ButtonText(dropRect, pawnLabel))
+                    Find.WindowStack.Add(new FloatMenu(GeneratePawnKindOptions(faction)));
+            }
 
             y += rowHeight;
         }
@@ -178,8 +203,6 @@ public class Dialog_SelectRepublicFactions : Window
         Widgets.Label(footerRect, $"Selected factions: {selectedFactionsCount}");
     }
 
-
-
     private void AddPerkPanel(Rect panel)
     {
         Widgets.DrawMenuSection(panel);
@@ -187,7 +210,7 @@ public class Dialog_SelectRepublicFactions : Window
         // --- Header ---
         float headerHeight = 30f;
         Rect headerRect = new Rect(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
-        Widgets.Label(headerRect, "Select available perks");
+        Widgets.Label(headerRect, "Select available perks for random distribution");
 
         // --- Footer ---
         float footerHeight = 25f;
@@ -230,9 +253,9 @@ public class Dialog_SelectRepublicFactions : Window
     private void AddSenatorDistribution(Rect inRect, float curY)
     {
         // Slider label
-        Widgets.Label(new Rect(0, curY, 350f, 30f), "Number of senators per faction: " + numOfSenatorsPerfaction);
+        Widgets.Label(new Rect(padding, curY, 350f, 30f), "Number of senators per faction: " + numOfSenatorsPerfaction);
 
-        Rect sliderRect = new Rect(0, curY + 25f, inRect.width - 20f, 28f);
+        Rect sliderRect = new Rect(padding, curY + 25f, inRect.width - 20f, 28f);
 
         numOfSenatorsPerfaction = Mathf.RoundToInt(
             Widgets.HorizontalSlider(
@@ -251,18 +274,18 @@ public class Dialog_SelectRepublicFactions : Window
     {
         curY += 30f;
         var totalNumberOfSenators = selectedFactionsCount * numOfSenatorsPerfaction;
-        Widgets.Label(new Rect(0, curY, inRect.width, 25f), $"Total number of Senators is {totalNumberOfSenators}. Perks/Research Projects will be randomly distributet among them.");
+        Widgets.Label(new Rect(padding, curY, inRect.width, 25f), $"Total number of Senators is {totalNumberOfSenators}. Perks/Research Projects will be randomly distributet among them.");
         curY += 30f;
         if(totalNumberOfSenators > selectedPerksCount)
-            Widgets.Label(new Rect(0, curY, inRect.width, 25f), "More senators than perks. Some perks will be added multiple times bridge the gap.");
+            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "More senators than perks. Some perks will be added multiple times bridge the gap.");
         curY += 30f;
         if (totalNumberOfSenators < selectedPerksCount)
-            Widgets.Label(new Rect(0, curY, inRect.width, 25f), "Less senators than perks. Not all selected perks will be available.");
+            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "Less senators than perks. Not all selected perks will be available.");
         curY += 30f;
 
         if(selectedFactionsCount > 7)
         {
-            Widgets.Label(new Rect(0, curY, inRect.width, 25f), "<color=yellow>More than 7 factions selected. The perk overview dialog may not display all factions correctly.</color>");
+            Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "<color=yellow>More than 7 factions selected. The perk overview dialog may not display all factions correctly.</color>");
             curY += 30f;
         }
     }

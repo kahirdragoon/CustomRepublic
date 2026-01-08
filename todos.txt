@@ -1,5 +1,4 @@
-- make research and perks selectable 
-- add dummy research so that part of the republic can be ignored
-- ideology restrictions when joining? Only without opposing idelogogies? Or only similiar ones?
+- icons for the perks
+
 - toggable verbose logging
-- going back fro world screen after world generation doesnt reset republic
+- ideology restrictions when joining? Only without opposing idelogogies? Or only similiar ones?
