@@ -32,5 +32,5 @@
 
   <CR.LessSenatorsThanPerks>Less senators than perks. Not all selected perks will be available.</CR.LessSenatorsThanPerks>
 
-  <CR.MoreThan7FactionsWarning>&lt;color=yellow&gt;More than 7 factions selected. The perk overview dialog may not display all factions correctly.&lt;/color&gt;</CR.MoreThan7FactionsWarning>
+  <CR.MoreThan7FactionsWarning>&lt;color=yellow&gt;More than 7 factions selected. The perk overview dialog may not display all factions correctly. Press ESC to close.&lt;/color&gt;</CR.MoreThan7FactionsWarning>
 </LanguageData>

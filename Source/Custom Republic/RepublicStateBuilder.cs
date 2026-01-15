@@ -34,7 +34,8 @@ public static class RepublicStateBuilder
         // --- Resolve research projects ---
         var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
             .Where(r => (r.knowledgeCost == 0 || r.knowledgeCategory == null) && r != dummyResearchProjectDef);
-        var availableResearch = nonAnomlyResearch.ToList();
+        //var availableResearch = nonAnomlyResearch.ToList();
+        var usedResearchDefs = new HashSet<string>();
 
         // --- Determine available senators ---
         int availableSenators = Math.Min(1, perkDefs.Count);
@@ -52,15 +53,15 @@ public static class RepublicStateBuilder
         int perkIndex = 0;
 
         perkDefs = perkDefs.InRandomOrder().ToList();
-        
+
         foreach (var factionDef in factionDefs)
         {
             var senatorInfoModExt = factionDef.GetModExtension<FactionExtension_SenatorInfoExtended>();
-            if(senatorInfoModExt != null)
+            if (senatorInfoModExt != null)
             {
 
-                nonAnomlyResearch = nonAnomlyResearch.Where(r => !senatorInfoModExt.senatorResearch.Contains(r));
-                availableResearch.RemoveAll(r => senatorInfoModExt.senatorResearch.Contains(r));
+                usedResearchDefs.UnionWith(senatorInfoModExt.senatorResearch.Select(r => r.defName));
+                //availableResearch.RemoveAll(r => senatorInfoModExt.senatorResearch.Contains(r));
                 perkDefs = perkDefs.Where(p => !senatorInfoModExt.senatorPerks.Contains(p)).ToList();
 
                 state.factionStates.Add(new RepublicStateFaction
@@ -106,33 +107,23 @@ public static class RepublicStateBuilder
                 // --- Research ---
                 string finalResearchDefName = dummyResearchProjectDef.defName;
                 List<string> senatorResearchDefNames = Enumerable.Repeat(dummyResearchProjectDef.defName, numSenators).ToList();
-                
-                if(!rules.useDummyResearch)
-                {
-                    if (availableResearch.Count == 0)
-                        availableResearch = nonAnomlyResearch.ToList();
-                    var availableFinalResearch = availableResearch
-                        .Where(r => r.techLevel == factionDef.techLevel && (rules.ignoreTechprintResearch || r.techprintCount > 0));
-                    if (!availableFinalResearch.Any())
-                        availableFinalResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
-                    if (!availableFinalResearch.Any())
-                    {
-                        Log.ErrorOnce($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
-                        return;
-                    }
-                    var finalResearch = availableFinalResearch.RandomElement();
-                    availableResearch.Remove(finalResearch);
 
-                    if (availableResearch.Count < numSenators)
-                        availableResearch = nonAnomlyResearch.ToList();
-                    var availableSenatorResearch = availableResearch.Where(r => r.techLevel == factionDef.techLevel);
-                    if (availableSenatorResearch.Count() < numSenators)
+                if (!rules.useDummyResearch)
+                {
+                    var finalResearchProjects = FindSuitableResearchProjects(factionDef.techLevel, rules.ignoreTechprintResearch, usedResearchDefs, 1);
+                    if (!finalResearchProjects.Any())
                     {
-                        Log.ErrorOnce($"No enough available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}", factionDef.GetHashCode());
-                        return;
+                        Log.Warning($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}. Choosing dummy research.");
+                        finalResearchDefName = dummyResearchProjectDef.defName;
                     }
-                    var senatorResearch = availableSenatorResearch.TakeRandomDistinct(numSenators);
-                    availableResearch.RemoveAll(r => senatorResearch.Contains(r));
+                    var finalResearch = finalResearchProjects[0];
+
+                    var senatorResearch = FindSuitableResearchProjects(factionDef.techLevel, false, usedResearchDefs, numSenators);
+                    if (!senatorResearch.Any())
+                    {
+                        Log.Warning($"No available research projects for faction {factionDef.defName} with tech level {factionDef.techLevel}. Choosing dummy research.");
+                        senatorResearch = Enumerable.Repeat(dummyResearchProjectDef, numSenators).ToList();
+                    }
 
                     finalResearchDefName = finalResearch.defName;
                     senatorResearchDefNames = senatorResearch.Select(r => r.defName).ToList();
@@ -156,6 +147,31 @@ public static class RepublicStateBuilder
         }
     }
 
+    private static List<ResearchProjectDef> FindSuitableResearchProjects(TechLevel techLevel, bool ignoreTechprintResearch, HashSet<string> usedResearchDefs, int count)
+    {
+        var nonAnomlyResearch = DefDatabase<ResearchProjectDef>.AllDefsListForReading
+            .Where(r => (r.knowledgeCost == 0 || r.knowledgeCategory == null) && r != dummyResearchProjectDef);
+        var availableResearch = nonAnomlyResearch
+            .Where(r => r.techLevel == techLevel && (ignoreTechprintResearch || r.techprintCount > 0) && !usedResearchDefs.Contains(r.defName));
+        if (!availableResearch.Any())
+            availableResearch = nonAnomlyResearch.Where(r => r.techLevel == techLevel && !usedResearchDefs.Contains(r.defName));
+        if (!availableResearch.Any())
+            availableResearch = nonAnomlyResearch.Where(r => r.techLevel == techLevel && (ignoreTechprintResearch || r.techprintCount > 0));
+        if (!availableResearch.Any())
+            availableResearch = nonAnomlyResearch.Where(r => r.techLevel == techLevel);
+        var choosenResearch = availableResearch.TakeRandomDistinct(count).ToList();
+        usedResearchDefs.UnionWith(choosenResearch.Select(r => r.defName));
+
+        if(choosenResearch.Count < count)
+        {
+            var chosenResearch2 = FindSuitableResearchProjects(techLevel, ignoreTechprintResearch, usedResearchDefs, count - choosenResearch.Count);
+            choosenResearch.AddRange(chosenResearch2);
+            usedResearchDefs.UnionWith(chosenResearch2.Select(r => r.defName));
+        }
+
+        return choosenResearch;
+    }
+
     public static RepublicStateFaction BuildFactionState(FactionDef factionDef, int numSenators)
     {
         var senatorInfoModExt = factionDef.GetModExtension<FactionExtension_SenatorInfoExtended>();
@@ -173,7 +189,7 @@ public static class RepublicStateBuilder
                 pawnKindDef = senatorInfoModExt.senatorPawnKindDef?.defName,
             };
         }
-        
+
         var rules = Current.Game.GetComponent<GameComponent_Republic>().rules;
 
         rules.selectedFactionDefs.Add(factionDef.defName);
@@ -188,7 +204,7 @@ public static class RepublicStateBuilder
 
         var republicFactions = Current.Game.GetComponent<GameComponent_Republic>().state.factionStates;
         var usedPerks = republicFactions.SelectMany(f => f.senatorPerks).ToHashSet();
-        var perkDefs =  availablePerkDefs.Where(p => !usedPerks.Contains(p.defName)).TakeRandomDistinct(numPerksNeeded).ToList();
+        var perkDefs = availablePerkDefs.Where(p => !usedPerks.Contains(p.defName)).TakeRandomDistinct(numPerksNeeded).ToList();
         if (perkDefs.Count < numPerksNeeded)
             perkDefs.AddRange(perkDefs.TakeRandom(numPerksNeeded - perkDefs.Count));
         var senatorPerks = perkDefs.Take(numSenators).Select(p => p.defName).ToList();
