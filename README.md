@@ -36,7 +36,7 @@ Whole XML structure of the mod extension:
     <perkBGPath>UI/Perks/PerkBG_CentralRepublic</perkBGPath>
     <pawnkind></pawnkind> <!-- leaving this blank is the same as chosing default in the 
                                republic customisation screen -->
-</li>"
+</li>
 ```
 
 During a game you can invite allies to join the republic. For this either travel to the faction and use the gizmo at the bottom or call them via the comms console. Perks and research will be assigned similiar as if they were enabled from start. The new faction will respect the choosen senator pawnkind in the customize republic menu. This cannot be changed after a game started except for savegame editing.
