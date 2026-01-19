@@ -1,2 +1,3 @@
 - toggable verbose logging
 - ideology restrictions when joining? Only without opposing idelogogies? Or only similiar ones?
+- make making allies harder? Make yayo bribe mor difficult by respecting factions idelolgy when sending gifts

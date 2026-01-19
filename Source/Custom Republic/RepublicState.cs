@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using Verse;
 using VFEC.Perks;
 using VFEC.Senators;
@@ -39,6 +40,18 @@ public class RepublicState : IExposable
         {
             var numberofSenators = factionStates.Count > 0 ? factionStates[0].numSenators : 3;
             factionStates.Add(RepublicStateBuilder.BuildFactionState(factionDef, numberofSenators));
+        }
+    }
+
+    public void InviteToRepublic(Faction faction)
+    {
+        if (!HasFaction(faction.def))
+        {
+            AddFaction(faction.def);
+
+            var letterLabel = "CR.LetterFactionJoinedLabel".Translate(faction.Name);
+            var letterText = "CR.LetterFactionJoinedDesc".Translate(faction.Name);
+            Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
         }
     }
 

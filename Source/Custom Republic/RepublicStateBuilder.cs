@@ -182,9 +182,9 @@ public static class RepublicStateBuilder
                 factionDefName = factionDef.defName,
                 factionDef = factionDef,
                 numSenators = senatorInfoModExt.numSenators,
-                senatorPerks = senatorInfoModExt.senatorPerks.Select(p => p.defName).ToList(),
+                senatorPerks = [.. senatorInfoModExt.senatorPerks.Select(p => p.defName)],
                 finalPerk = senatorInfoModExt.finalPerk.defName,
-                senatorResearch = senatorInfoModExt.senatorResearch.Select(r => r.defName).ToList(),
+                senatorResearch = [.. senatorInfoModExt.senatorResearch.Select(r => r.defName)],
                 finalResearch = senatorInfoModExt.finalResearch.defName,
                 pawnKindDef = senatorInfoModExt.senatorPawnKindDef?.defName,
             };
@@ -209,7 +209,6 @@ public static class RepublicStateBuilder
             perkDefs.AddRange(perkDefs.TakeRandom(numPerksNeeded - perkDefs.Count));
         var senatorPerks = perkDefs.Take(numSenators).Select(p => p.defName).ToList();
         string finalPerk = perkDefs.TakeLast(1).First().defName;
-
         // --- Research ---
         string finalResearchDefName = dummyResearchProjectDef.defName;
         List<string> senatorResearchDefNames = Enumerable.Repeat(dummyResearchProjectDef.defName, numSenators).ToList();

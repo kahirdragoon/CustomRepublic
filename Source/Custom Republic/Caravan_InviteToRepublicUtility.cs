@@ -22,21 +22,10 @@ internal class Caravan_InviteToRepublicUtility
             defaultLabel = "CR.CommandInviteToRepublic".Translate(),
             defaultDesc = "CR.CommandInviteToRepublicDesc".Translate(),
             icon = InviteToRepublicCommandTex,
-            action = () =>
-            {
+            action = () => {
                 var state = Current.Game.GetComponent<GameComponent_Republic>().state;
-                if (state == null)
-                    return;
-
-                if (!state.HasFaction(faction.def))
-                {
-                    state.AddFaction(faction.def);
-
-                    var letterLabel = "CR.LetterFactionJoinedLabel".Translate(faction.Name);
-                    var letterText = "CR.LetterFactionJoinedDesc".Translate(faction.Name);
-                    Find.LetterStack.ReceiveLetter(letterLabel, letterText, LetterDefOf.PositiveEvent);
-                }
-            } 
+                state.InviteToRepublic(faction);
+            }
         };
         if(faction.RelationWith(Find.FactionManager.OfPlayer).kind < FactionRelationKind.Ally)
         {
