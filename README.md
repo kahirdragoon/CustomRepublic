@@ -34,7 +34,8 @@ Whole XML structure of the mod extension:
     <finalResearch>VFEC_DramaAndComedy</finalResearch>
     <finalPerk>Tributum</finalPerk>
     <perkBGPath>UI/Perks/PerkBG_CentralRepublic</perkBGPath>
-    <pawnkind></pawnkind> <!-- leaving this blank is the same as chosing default in the republuc customisation screen -->
+    <pawnkind></pawnkind> <!-- leaving this blank is the same as chosing default in the 
+                               republic customisation screen -->
 </li>"
 ```
 
