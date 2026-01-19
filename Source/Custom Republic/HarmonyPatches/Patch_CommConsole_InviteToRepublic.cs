@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using Verse;
-using Verse.Noise;
 
 namespace CustomRepublic;
 
@@ -19,7 +18,7 @@ internal static class Patch_CommConsole_InviteToRepublic
         if(faction.PlayerRelationKind != FactionRelationKind.Ally)
         {
             diaOption.Disable("MustBeAlly".Translate());
-        } 
+        }
         else
         {
             diaOption.action = () =>
@@ -27,7 +26,13 @@ internal static class Patch_CommConsole_InviteToRepublic
                 var state = Current.Game.GetComponent<GameComponent_Republic>().state;
                 state.InviteToRepublic(faction);
             };
-            diaOption.link = new DiaNode("CR_RepublicAccepted".Translate());
+            diaOption.link = new DiaNode("CR_RepublicAccepted".Translate())
+            {
+                options = [new DiaOption((string)"OK".Translate())
+                {
+                    linkLateBind = FactionDialogMaker.ResetToRoot(faction, negotiator)
+                }]
+            };
         }
     }
 }

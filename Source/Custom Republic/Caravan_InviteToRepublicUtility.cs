@@ -17,7 +17,7 @@ internal class Caravan_InviteToRepublicUtility
 
     public static Command InviteToRepublicCommand(Faction faction)
     {
-        Command_Action commandAction = new Command_Action
+        Command_Action commandAction = new()
         {
             defaultLabel = "CR.CommandInviteToRepublic".Translate(),
             defaultDesc = "CR.CommandInviteToRepublicDesc".Translate(),

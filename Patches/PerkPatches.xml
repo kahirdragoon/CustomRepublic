@@ -3,14 +3,14 @@
    <Operation Class="PatchOperationReplace">
         <xpath>Defs/VFEC.Perks.PerkDef[defName="MensSanaInCorporeSano"]/texPath</xpath>
         <value>
-            <texPath>Perk_ActaNonVerba</texPath>
+            <texPath>UI/Perks/Perk_ActaNonVerba</texPath>
         </value>
     </Operation>
 
     <Operation Class="PatchOperationReplace">
         <xpath>Defs/VFEC.Perks.PerkDef[defName="ActaNonVerba"]/texPath</xpath>
         <value>
-            <texPath>Perk_MensSanaInCorporeSano</texPath>
+            <texPath>UI/Perks/Perk_MensSanaInCorporeSano</texPath>
         </value>
     </Operation>
 </Patch>

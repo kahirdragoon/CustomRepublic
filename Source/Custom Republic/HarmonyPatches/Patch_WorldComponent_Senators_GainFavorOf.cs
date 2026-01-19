@@ -39,7 +39,7 @@ internal class Patch_WorldComponent_Senators_GainFavorOf
 
         var info = __instance.InfoFor(pawn, faction);
         info.Favored = true;
-        var ext = faction.def.GetModExtension<FactionExtension_SenatorInfo>();
+        var ext = FactionExtension_SenatorInfoExtendedFactory.CreateForFaction(faction.def);
         var perk = ext.senatorPerks[__instance.SenatorInfo[faction].IndexOf(info)];
         var research = ext.senatorResearch[__instance.SenatorInfo[faction].IndexOf(info)];
         var letterLabel = "VFEC.Letters.SenatorJoins".Translate(pawn.Name.ToStringFull);
@@ -70,7 +70,6 @@ internal class Patch_WorldComponent_Senators_GainFavorOf
 
             if (faction.ideos is not null && Faction.OfPlayer.ideos is not null) faction.ideos.SetPrimary(Faction.OfPlayer.ideos.PrimaryIdeo);
 
-            
             if(republic.HasFaction(faction.def) && republic.United)
             {
                 GameComponent_PerkManager.Instance.AddPerk(republic.customRepublicDef.perk);

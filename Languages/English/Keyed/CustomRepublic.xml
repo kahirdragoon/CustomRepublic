@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <CR.CustomizeRepublicButton>Customize Republic</CR.CustomizeRepublicButton>
-
   <CR.ButtonAccept>Accept</CR.ButtonAccept>
-
   <CR.IgnoreTechprintResearch>Ignore Techprint-Locked Research</CR.IgnoreTechprintResearch>
   <CR.IgnoreTechprintResearchDesc>If enabled, techprint-locked research projects will be ignored when distributing research among senators.</CR.IgnoreTechprintResearchDesc>
-
   <CR.UseDummyResearch>Use Dummy Research Project</CR.UseDummyResearch>
   <CR.UseDummyResearchDesc>If enabled, a simple neolithic research project will be used for senators. This effectively disables getting research for senators.</CR.UseDummyResearchDesc>
-
   <CR.SelectRepublicFactions>Select republic factions</CR.SelectRepublicFactions>
-
   <CR.SenatorPawnKindHeader>Senator PawnKind</CR.SenatorPawnKindHeader>
-
   <CR.DataDefinedByModExtension>Data defined by ModExtension</CR.DataDefinedByModExtension>
-
   <CR.Default>Default</CR.Default>
-
   <CR.SelectedFactions>Selected factions: {0}</CR.SelectedFactions>
-
   <CR.SelectAvailablePerks>Select available perks for random distribution</CR.SelectAvailablePerks>
-
   <CR.SelectedPerks>Selected Perks: {0}</CR.SelectedPerks>
-
   <CR.NumberOfSenatorsPerFaction>Number of senators per faction: {0}</CR.NumberOfSenatorsPerFaction>
-
   <CR.TotalNumberOfSenators>Total number of Senators is {0}. Perks/Research Projects will be randomly distributet among them.</CR.TotalNumberOfSenators>
-
   <CR.MoreSenatorsThanPerks>More senators than perks. Some perks will be added multiple times bridge the gap.</CR.MoreSenatorsThanPerks>
-
   <CR.LessSenatorsThanPerks>Less senators than perks. Not all selected perks will be available.</CR.LessSenatorsThanPerks>
-
   <CR.MoreThan7FactionsWarning>&lt;color=yellow&gt;More than 7 factions selected. The perk overview dialog may not display all factions correctly. Press ESC to close.&lt;/color&gt;</CR.MoreThan7FactionsWarning>
+
+  <CR.CommandInviteToRepublic>Invite to Republic</CR.CommandInviteToRepublic>
+  <CR.CommandInviteToRepublicDesc>Invite this faction to join your republic.</CR.CommandInviteToRepublicDesc>
+
+  <CR.CommandInviteToRepublicFailNotAlly>Must be allied to invite.</CR.CommandInviteToRepublicFailNotAlly>
+  <CR.CommandInviteToRepublicFailAlreadyInRepublic>This faction is already part of your republic.</CR.CommandInviteToRepublicFailAlreadyInRepublic>
+
+  <CR_InviteToRepublic>Invite to Republic</CR_InviteToRepublic>
+  <MustBeAlly>You must be allied with this faction.</MustBeAlly>
+
+  <CR_RepublicAccepted>They accept your invitation and agree to join your republic.</CR_RepublicAccepted>
+
+  <CR.LetterFactionJoinedLabel>{0} joins the Republic</CR.LetterFactionJoinedLabel>
+  <CR.LetterFactionJoinedDesc>
+    After diplomatic negotiations, {0} has agreed to join your republic.
+  </CR.LetterFactionJoinedDesc>
 </LanguageData>
