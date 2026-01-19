@@ -1,4 +1,2 @@
-- icons for the perks
-
 - toggable verbose logging
 - ideology restrictions when joining? Only without opposing idelogogies? Or only similiar ones?

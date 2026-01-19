@@ -3,9 +3,8 @@
     <VFEC.Perks.PerkDef>
         <label>Magister Aedificandi</label>
         <defName>CR_MagisterAedificandi</defName>
-        <description>Construction success chance increased by 20% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_MagisterAedificandi</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <description>Construction speed increased by 20% if the pawn is in a positive mood.</description>
+        <texPath>UI/Perks/Perk_MagisterAedificandi</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <ConstructionSpeed>0.2</ConstructionSpeed>
@@ -16,8 +15,7 @@
         <label>Perfectus Fossor</label>
         <defName>CR_PerfectusFossor</defName>
         <description>Mining speed increased by 20% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_PerfectusFossor</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_PerfectusFossor</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <MiningSpeed>0.2</MiningSpeed>
@@ -28,7 +26,6 @@
         <label>Magister Agriculturae</label>
         <defName>CR_MagisterAgriculturae</defName>
         <description>Plant work speed increased by 20% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_MagisterAgriculturae</texPath> -->
         <texPath>UI/Perks/Perk_MagisterAgriculturae</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
@@ -40,8 +37,7 @@
         <label>Dominus Bestiarum</label>
         <defName>CR_DominusBestiarum</defName>
         <description>Animal taming chance increased by 10% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_DominusBestiarum</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_DominusBestiarum</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <TameAnimalChance>0.1</TameAnimalChance>
@@ -52,8 +48,7 @@
         <label>Coquus Virtuosus</label>
         <defName>CR_CoquusVirtuosus</defName>
         <description>Cooking speed increased by 20% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_CoquusVirtuosus</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_CoquusVirtuosus</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <CookSpeed>0.20</CookSpeed>
@@ -64,8 +59,7 @@
         <label>Faber Ingeniosus</label>
         <defName>CR_FaberIngeniosus</defName>
         <description>Crafting speed increased by 20% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_FaberIngeniosus</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_FaberIngeniosus</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <GeneralLaborSpeed>0.2</GeneralLaborSpeed>
@@ -76,8 +70,7 @@
         <label>Charisma Maxima</label>
         <defName>CR_CharismaMaxima</defName>
         <description>Social interaction impact increased by 10% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_CharismaMaxima</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_CharismaMaxima</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <SocialImpact>0.1</SocialImpact>
@@ -87,24 +80,22 @@
     <VFEC.Perks.PerkDef>
         <label>Sagittarius Praestans</label>
         <defName>CR_SagittariusPraestans</defName>
-        <description>Shooting accuracy increased by 10% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_SagittariusPraestans</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <description>Shooting accuracy increased by 5% if the pawn is in a positive mood.</description>
+        <texPath>UI/Perks/Perk_SagittariusPraestans</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
-            <ShootingAccuracyPawn>0.1</ShootingAccuracyPawn>
+            <ShootingAccuracyPawn>0.05</ShootingAccuracyPawn>
         </statOffsets>
     </VFEC.Perks.PerkDef>
 
     <VFEC.Perks.PerkDef>
         <label>Gladiator Perfectus</label>
         <defName>CR_GladiatorPerfectus</defName>
-        <description>Melee hit chance increased by 10% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_GladiatorPerfectus</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <description>Melee hit chance increased by 5% if the pawn is in a positive mood.</description>
+        <texPath>UI/Perks/Perk_GladiatorPerfectus</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
-            <MeleeHitChance>0.1</MeleeHitChance>
+            <MeleeHitChance>0.05</MeleeHitChance>
         </statOffsets>
     </VFEC.Perks.PerkDef>
 
@@ -112,8 +103,7 @@
         <label>Parma Invicta</label>
         <defName>CR_ParmaInvicta</defName>
         <description>Melee dodge chance increased by 5% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_ParmaInvicta</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_ParmaInvicta</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <MeleeDodgeChance>0.05</MeleeDodgeChance>
@@ -124,8 +114,7 @@
         <label>Salus Aegroti</label>
         <defName>CR_SalusAegroti</defName>
         <description>Medical tend quality is improved by 10% if the pawn is in a positive mood.</description>
-        <!-- <texPath>UI/Perks/Perk_SalusAegroti</texPath> -->
-        <texPath>UI/Perks/Perk_PanemEtCircenses</texPath>
+        <texPath>UI/Perks/Perk_SalusAegroti</texPath>
         <workerClass>VFEC.Perks.Workers.Corpore</workerClass>
         <statOffsets>
             <MedicalTendQuality>0.10</MedicalTendQuality>
