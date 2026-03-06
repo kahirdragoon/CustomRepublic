@@ -9,27 +9,22 @@ using static System.Collections.Specialized.BitVector32;
 namespace CustomRepublic;
 public class Dialog_SelectRepublicFactions : Window
 {
-    public override Vector2 InitialSize => new Vector2(1000f, 720f);
+    public override Vector2 InitialSize => new(1000f, 720f);
 
     private Vector2 factionScroll;
-    private Dictionary<FactionDef, bool> selectedFactions = new();
-    private Dictionary<FactionDef, PawnKindDef?> selectedFactionPawnKinds = new();
-    private int selectedFactionsCount => selectedFactions.Values.Count(v => v);
-    private List<FactionDef> factionDefsWithExtension = new();
+    private readonly Dictionary<FactionDef, bool> selectedFactions = [];
+    private readonly Dictionary<FactionDef, PawnKindDef?> selectedFactionPawnKinds = [];
+    private int SelectedFactionsCount => selectedFactions.Values.Count(v => v);
+    private readonly List<FactionDef> factionDefsWithExtension = [];
 
     private bool ignoreTechprintResearch = true;
     private bool useDummyResearch = false;
-    private List<ResearchProjectDef> nonFinalResearchProjects = new();
-    private List<ResearchProjectDef> finalReasearchProjects = new();
    
-    private int availableResearchCount => nonFinalResearchProjects.Count + finalReasearchProjects.Count;
-
     private Vector2 perkScroll;
-    private Dictionary<PerkDef, bool> selectedPerks = new();
-    private int selectedPerksCount => selectedPerks.Values.Count(v => v);
+    private readonly Dictionary<PerkDef, bool> selectedPerks = [];
+    private int SelectedPerksCount => selectedPerks.Values.Count(v => v);
 
     private int numOfSenatorsPerfaction = 3;
-    private int availableSenatorsCount => Math.Min(1, selectedPerksCount);
 
     private const float padding = 10f;
 
@@ -134,27 +129,27 @@ public class Dialog_SelectRepublicFactions : Window
 
         // --- Header ---
         float headerHeight = 30f;
-        Rect headerRect = new Rect(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
+        Rect headerRect = new(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
         Widgets.Label(headerRect, "CR.SelectRepublicFactions".Translate());
 
         // Senator PawnKind header label (placed on same line as header)
-        Rect pawnHeaderRect = new Rect(headerRect.x + 240f, headerRect.y, 150f, headerRect.height);
+        Rect pawnHeaderRect = new(headerRect.x + 240f, headerRect.y, 150f, headerRect.height);
         Widgets.Label(pawnHeaderRect, "CR.SenatorPawnKindHeader".Translate());
 
         // --- Footer ---
         float footerHeight = 25f;
-        Rect footerRect = new Rect(panel.x + 5f, panel.yMax - footerHeight - 5f, panel.width - 10f, footerHeight);
+        Rect footerRect = new(panel.x + 5f, panel.yMax - footerHeight - 5f, panel.width - 10f, footerHeight);
 
         // --- Scroll area rect (visible window) ---
         float scrollY = headerRect.yMax + 5f;
         float scrollHeight = panel.height - headerHeight - footerHeight - 15f;
         // Subtract header, footer, and some padding
 
-        Rect scrollOuter = new Rect(panel.x + 5f, scrollY, panel.width - 10f, scrollHeight);
+        Rect scrollOuter = new(panel.x + 5f, scrollY, panel.width - 10f, scrollHeight);
 
         // --- Inner scroll content rect (relative to 0,0 inside scroll) ---
         float rowHeight = 32f;
-        Rect viewRect = new Rect(0, 0, scrollOuter.width - 20f, selectedFactions.Count * rowHeight);
+        Rect viewRect = new(0, 0, scrollOuter.width - 20f, selectedFactions.Count * rowHeight);
 
         Widgets.BeginScrollView(scrollOuter, ref factionScroll, viewRect);
 
@@ -163,7 +158,7 @@ public class Dialog_SelectRepublicFactions : Window
 
         foreach (var faction in selectedFactions.Keys.ToList())
         {
-            Rect row = new Rect(0, y, viewRect.width, rowHeight);
+            Rect row = new(0, y, viewRect.width, rowHeight);
 
             // Checkbox
             bool selected = selectedFactions[faction];
@@ -174,7 +169,7 @@ public class Dialog_SelectRepublicFactions : Window
             {
                 // Display note that data comes from ModExtension
                 float dropdownX = headerRect.x + 220f;
-                Rect modLabelRect = new Rect(dropdownX, y + 4f, 300f, rowHeight - 8f);
+                Rect modLabelRect = new(dropdownX, y + 4f, 300f, rowHeight - 8f);
                 Widgets.Label(modLabelRect, "CR.DataDefinedByModExtension".Translate());
             }
             else
@@ -186,7 +181,7 @@ public class Dialog_SelectRepublicFactions : Window
                 float pawnWidth = 120f;
                 // Calculate dropdown X relative to panel so it lines up with pawnHeaderRect
                 float dropdownX = headerRect.x + 220f;
-                Rect dropRect = new Rect(dropdownX, y + 4f, pawnWidth, rowHeight - 8f);
+                Rect dropRect = new(dropdownX, y + 4f, pawnWidth, rowHeight - 8f);
                 if (Widgets.ButtonText(dropRect, pawnLabel))
                     Find.WindowStack.Add(new FloatMenu(GeneratePawnKindOptions(faction)));
             }
@@ -197,7 +192,7 @@ public class Dialog_SelectRepublicFactions : Window
         Widgets.EndScrollView();
 
         // --- Footer label ---
-        Widgets.Label(footerRect, "CR.SelectedFactions".Translate(selectedFactionsCount));
+        Widgets.Label(footerRect, "CR.SelectedFactions".Translate(SelectedFactionsCount));
     }
 
     private void AddPerkPanel(Rect panel)
@@ -206,22 +201,22 @@ public class Dialog_SelectRepublicFactions : Window
 
         // --- Header ---
         float headerHeight = 30f;
-        Rect headerRect = new Rect(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
+        Rect headerRect = new(panel.x + 5f, panel.y + 5f, panel.width - 10f, 25f);
         Widgets.Label(headerRect, "CR.SelectAvailablePerks".Translate());
 
         // --- Footer ---
         float footerHeight = 25f;
-        Rect footerRect = new Rect(panel.x + 5f, panel.yMax - footerHeight - 5f, panel.width - 10f, footerHeight);
+        Rect footerRect = new(panel.x + 5f, panel.yMax - footerHeight - 5f, panel.width - 10f, footerHeight);
 
         // --- Scroll window (visible area) ---
         float scrollY = headerRect.yMax + 5f;
         float scrollHeight = panel.height - headerHeight - footerHeight - 15f;
 
-        Rect scrollOuter = new Rect(panel.x + 5f, scrollY, panel.width - 10f, scrollHeight);
+        Rect scrollOuter = new(panel.x + 5f, scrollY, panel.width - 10f, scrollHeight);
 
         // --- Inner scroll content (local 0,0 coords) ---
         float rowHeight = 28f;
-        Rect viewRect = new Rect(0, 0, scrollOuter.width - 20f, selectedPerks.Count * rowHeight);
+        Rect viewRect = new(0, 0, scrollOuter.width - 20f, selectedPerks.Count * rowHeight);
 
         Widgets.BeginScrollView(scrollOuter, ref perkScroll, viewRect);
 
@@ -231,7 +226,7 @@ public class Dialog_SelectRepublicFactions : Window
         foreach (var perk in selectedPerks.Keys.ToList())
         {
             bool selected = selectedPerks[perk];
-            Rect row = new Rect(5f, y, viewRect.width - 10f, rowHeight);
+            Rect row = new(5f, y, viewRect.width - 10f, rowHeight);
 
             Widgets.CheckboxLabeled(row, perk.LabelCap, ref selected);
             selectedPerks[perk] = selected;
@@ -244,7 +239,7 @@ public class Dialog_SelectRepublicFactions : Window
         Widgets.EndScrollView();
 
         // --- Footer label ---
-        Widgets.Label(footerRect, "CR.SelectedPerks".Translate(selectedPerksCount));
+        Widgets.Label(footerRect, "CR.SelectedPerks".Translate(SelectedPerksCount));
     }
 
     private void AddSenatorDistribution(Rect inRect, float curY)
@@ -252,7 +247,7 @@ public class Dialog_SelectRepublicFactions : Window
         // Slider label
         Widgets.Label(new Rect(padding, curY, 350f, 30f), "CR.NumberOfSenatorsPerFaction".Translate(numOfSenatorsPerfaction));
 
-        Rect sliderRect = new Rect(padding, curY + 25f, inRect.width - 20f, 28f);
+        Rect sliderRect = new(padding, curY + 25f, inRect.width - 20f, 28f);
 
         numOfSenatorsPerfaction = Mathf.RoundToInt(
             Widgets.HorizontalSlider(
@@ -270,17 +265,17 @@ public class Dialog_SelectRepublicFactions : Window
     private void AddInformationalDisplay(ref Rect inRect, ref float curY)
     {
         curY += 30f;
-        var totalNumberOfSenators = selectedFactionsCount * numOfSenatorsPerfaction;
+        var totalNumberOfSenators = SelectedFactionsCount * numOfSenatorsPerfaction;
         Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.TotalNumberOfSenators".Translate(totalNumberOfSenators));
         curY += 30f;
-        if(totalNumberOfSenators > selectedPerksCount)
+        if(totalNumberOfSenators > SelectedPerksCount)
             Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.MoreSenatorsThanPerks".Translate());
         curY += 30f;
-        if (totalNumberOfSenators < selectedPerksCount)
+        if (totalNumberOfSenators < SelectedPerksCount)
             Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.LessSenatorsThanPerks".Translate());
         curY += 30f;
 
-        if(selectedFactionsCount > 7)
+        if(SelectedFactionsCount > 7)
         {
             Widgets.Label(new Rect(padding, curY, inRect.width, 25f), "CR.MoreThan7FactionsWarning".Translate());
             curY += 30f;
@@ -289,12 +284,13 @@ public class Dialog_SelectRepublicFactions : Window
 
     private List<FloatMenuOption> GeneratePawnKindOptions(FactionDef factionDef)
     {
-        var opts = new List<FloatMenuOption>();
-
-        opts.Add(new FloatMenuOption("CR.Default".Translate(), () =>
+        var opts = new List<FloatMenuOption>
         {
-            selectedFactionPawnKinds[factionDef] = null;
-        }));
+            new("CR.Default".Translate(), () =>
+            {
+                selectedFactionPawnKinds[factionDef] = null;
+            })
+        };
 
         foreach (var kind in DefDatabase<PawnKindDef>.AllDefs)
         {
@@ -318,9 +314,9 @@ public class Dialog_SelectRepublicFactions : Window
         comp.rules.ignoreTechprintResearch = ignoreTechprintResearch;
         comp.rules.useDummyResearch = useDummyResearch;
         comp.rules.numOfSenatorsPerFaction = numOfSenatorsPerfaction;
-        comp.rules.selectedFactionDefs = selectedFactions.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName).ToList();
+        comp.rules.selectedFactionDefs = [.. selectedFactions.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName)];
         comp.rules.pawnKindPerFaction = selectedFactionPawnKinds
             .ToDictionary(kvp => kvp.Key.defName, kvp => kvp.Value?.defName);
-        comp.rules.selectedPerkDefs = selectedPerks.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName).ToList();
+        comp.rules.selectedPerkDefs = [.. selectedPerks.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName)];
     }
 }
