@@ -113,12 +113,12 @@ public class Dialog_SelectRepublicFactions : Window
     private void AddTechPanel(Rect panel)
     {
         float y = panel.y + 5f;
-        var ignoreTechprintRect = new Rect(padding + panel.x + 5f, y + 5f, panel.width - 13f, 28f);
+        var ignoreTechprintRect = new Rect(padding + panel.x, y + 5f, panel.width - 13f, 28f);
         Widgets.CheckboxLabeled(ignoreTechprintRect, "CR.IgnoreTechprintResearch".Translate(), ref ignoreTechprintResearch);
         TooltipHandler.TipRegion(ignoreTechprintRect, "CR.IgnoreTechprintResearchDesc".Translate());
 
         y += 30f;
-        var useDummyRect = new Rect(padding + panel.x + 5f, y + 5f, panel.width - 13f, 28f);
+        var useDummyRect = new Rect(padding + panel.x, y + 5f, panel.width - 13f, 28f);
         Widgets.CheckboxLabeled(useDummyRect, "CR.UseDummyResearch".Translate(), ref useDummyResearch);
         TooltipHandler.TipRegion(useDummyRect, "CR.UseDummyResearchDesc".Translate());
     }

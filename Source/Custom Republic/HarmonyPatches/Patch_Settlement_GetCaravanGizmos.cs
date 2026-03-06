@@ -16,7 +16,7 @@ public static class Patch_Settlement_GetCaravanGizmos
             return;
         if (CaravanVisitUtility.SettlementVisitedNow(caravan) == __instance
             && !GameComponent_Republic.Instance.state.HasFaction(__instance.Faction.def))
-            list.Add(Caravan_InviteToRepublicUtility.InviteToRepublicCommand(__instance.Faction));
+            list.Add(Caravan_InviteToRepublicUtility.InviteToRepublicCommand(caravan, __instance.Faction));
         __result = list;
     }
 }

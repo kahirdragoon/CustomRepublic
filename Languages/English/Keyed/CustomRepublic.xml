@@ -22,13 +22,13 @@
   <CR.CommandInviteToRepublic>Invite to Republic</CR.CommandInviteToRepublic>
   <CR.CommandInviteToRepublicDesc>Invite this faction to join your republic.</CR.CommandInviteToRepublicDesc>
 
-  <CR.CommandInviteToRepublicFailNotAlly>Must be allied to invite.</CR.CommandInviteToRepublicFailNotAlly>
   <CR.CommandInviteToRepublicFailAlreadyInRepublic>This faction is already part of your republic.</CR.CommandInviteToRepublicFailAlreadyInRepublic>
 
-  <CR_InviteToRepublic>Invite to Republic</CR_InviteToRepublic>
-  <MustBeAlly>You must be allied with this faction.</MustBeAlly>
+  <CR.InviteToRepublic>Invite to Republic</CR.InviteToRepublic>
+  <CR.MustBeAlly>You must be allied with this faction.</CR.MustBeAlly>
+  <CR.NeedPermit>You need to be at least a baron to invite the empire.</CR.NeedPermit>
 
-  <CR_RepublicAccepted>They accept your invitation and agree to join your republic.</CR_RepublicAccepted>
+  <CR.RepublicAccepted>They accepted your invitation and agreed to join your republic.</CR.RepublicAccepted>
 
   <CR.LetterFactionJoinedLabel>{0} joins the Republic</CR.LetterFactionJoinedLabel>
   <CR.LetterFactionJoinedDesc>

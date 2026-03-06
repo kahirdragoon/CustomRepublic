@@ -15,7 +15,7 @@ internal class Caravan_InviteToRepublicUtility
 {
     private static readonly Texture2D InviteToRepublicCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/Trade");
 
-    public static Command InviteToRepublicCommand(Faction faction)
+    public static Command InviteToRepublicCommand(Caravan caravan, Faction faction)
     {
         Command_Action commandAction = new()
         {
@@ -29,7 +29,11 @@ internal class Caravan_InviteToRepublicUtility
         };
         if(faction.RelationWith(Find.FactionManager.OfPlayer).kind < FactionRelationKind.Ally)
         {
-            commandAction.Disable("CR.CommandInviteToRepublicFailNotAlly".Translate());
+            commandAction.Disable("CR.MustBeAlly".Translate());
+        }
+        else if(faction == Faction.OfEmpire && (caravan.PawnsListForReading.All(p => p.royalty == null || !p.royalty.HasPermit(CustomRepublicDefOf.InviteToRepublic, faction))))
+        {
+            commandAction.Disable("CR.NeedPermit".Translate());
         }
         else
         {

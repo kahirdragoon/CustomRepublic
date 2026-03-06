@@ -8,7 +8,7 @@ namespace CustomRepublic;
 
 public class RepublicState : IExposable
 {
-    public List<RepublicStateFaction> factionStates = new();
+    public List<RepublicStateFaction> factionStates = [];
     public bool United
     {
         get
@@ -60,6 +60,6 @@ public class RepublicState : IExposable
         Scribe_Collections.Look(ref factionStates, "factionStates", LookMode.Deep);
 
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            factionStates ??= new List<RepublicStateFaction>();
+            factionStates ??= [];
     }
 }

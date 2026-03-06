@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+    <Operation Class="PatchOperationAdd">
+        <xpath>Defs/RoyalTitleDef[defName="Baron" 
+            or defName="Count" 
+            or @Name="BaseEmpireTitleNPC"
+            or defName="VFEE_Archcount"
+            or defName="VFEE_Marquess"
+            or defName="VFEE_Archduke"
+            or defName="VFEE_Magister"
+            or defName="VFEE_Despot"
+            or defName="VFEE_HighStellarch"]/permits</xpath>
+        <value>
+            <li>InviteToRepublic</li>
+        </value>
+    </Operation>
+</Patch>
