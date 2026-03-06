@@ -23,8 +23,8 @@ internal class Caravan_InviteToRepublicUtility
             defaultDesc = "CR.CommandInviteToRepublicDesc".Translate(),
             icon = InviteToRepublicCommandTex,
             action = () => {
-                var state = Current.Game.GetComponent<GameComponent_Republic>().state;
-                state.InviteToRepublic(faction);
+                var state = GameComponent_Republic.Instance?.state;
+                state?.InviteToRepublic(faction);
             }
         };
         if(faction.RelationWith(Find.FactionManager.OfPlayer).kind < FactionRelationKind.Ally)
@@ -33,8 +33,8 @@ internal class Caravan_InviteToRepublicUtility
         }
         else
         {
-            var state = Current.Game.GetComponent<GameComponent_Republic>().state;
-            if(state.HasFaction(faction.def))
+            var state = GameComponent_Republic.Instance?.state;
+            if(state != null && state.HasFaction(faction.def))
             {
                 commandAction.Disable("CR.CommandInviteToRepublicFailAlreadyInRepublic".Translate());
             }

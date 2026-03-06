@@ -8,7 +8,7 @@ namespace CustomRepublic;
 
 public static class FactionExtension_SenatorInfoExtendedFactory
 {
-    private static readonly Dictionary<string, FactionExtension_SenatorInfoExtended> cache = new();
+    private static readonly Dictionary<string, FactionExtension_SenatorInfoExtended> cache = [];
 
     public static FactionExtension_SenatorInfo CreateForFactionFromDef(Def def)
     {
@@ -26,7 +26,7 @@ public static class FactionExtension_SenatorInfoExtendedFactory
             return (FactionExtension_SenatorInfoExtended)Empty();
         }
 
-        var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
+        var state = GameComponent_Republic.Instance?.state;
 
         return CreateForFaction(factionDef, state);
     }
@@ -40,30 +40,27 @@ public static class FactionExtension_SenatorInfoExtendedFactory
         if (factionState is null)
         {
             Log.Warning($"[Custom Republic] No republic state for faction {factionDef.defName}");
-            return default(FactionExtension_SenatorInfoExtended);
+            return new FactionExtension_SenatorInfoExtended();
         }
 
         ext = new FactionExtension_SenatorInfoExtended
         {
             numSenators = factionState.numSenators,
-            perkBGPath = "UI/Perks/PerkBG_WesternRepublic"
+            perkBGPath = "UI/Perks/PerkBG_WesternRepublic",
+            senatorPerks = [.. factionState.senatorPerks
+                .Select(defName => DefDatabase<PerkDef>.GetNamedSilentFail(defName))
+                .Where(p => p != null)],
+
+            finalPerk = DefDatabase<PerkDef>
+                .GetNamedSilentFail(factionState.finalPerk),
+
+            senatorResearch = [.. factionState.senatorResearch
+                .Select(defName => DefDatabase<ResearchProjectDef>.GetNamedSilentFail(defName))
+                .Where(r => r != null)],
+
+            finalResearch = DefDatabase<ResearchProjectDef>
+                .GetNamedSilentFail(factionState.finalResearch)
         };
-
-        ext.senatorPerks = factionState.senatorPerks
-            .Select(defName => DefDatabase<PerkDef>.GetNamedSilentFail(defName))
-            .Where(p => p != null)
-            .ToList();
-
-        ext.finalPerk = DefDatabase<PerkDef>
-            .GetNamedSilentFail(factionState.finalPerk);
-
-        ext.senatorResearch = factionState.senatorResearch
-            .Select(defName => DefDatabase<ResearchProjectDef>.GetNamedSilentFail(defName))
-            .Where(r => r != null)
-            .ToList();
-
-        ext.finalResearch = DefDatabase<ResearchProjectDef>
-            .GetNamedSilentFail(factionState.finalResearch);
 
         if (!string.IsNullOrEmpty(factionState.pawnKindDef))
             ext.senatorPawnKindDef = DefDatabase<PawnKindDef>.GetNamedSilentFail(factionState.pawnKindDef);
@@ -78,8 +75,8 @@ public static class FactionExtension_SenatorInfoExtendedFactory
         return new FactionExtension_SenatorInfo
         {
             numSenators = 0,
-            senatorPerks = new List<PerkDef>(),
-            senatorResearch = new List<ResearchProjectDef>()
+            senatorPerks = [],
+            senatorResearch = []
         };
     }
 }

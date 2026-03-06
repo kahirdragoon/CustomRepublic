@@ -17,7 +17,7 @@ internal static class Patch_GenerateSenatorByPawnkind
 {
     public static bool Prefix(ref Pawn __result, WorldComponent_Senators __instance, Faction faction)
     {
-        var rules = Current.Game.GetComponent<GameComponent_Republic>()?.rules;
+        var rules = GameComponent_Republic.Instance?.rules;
         if (faction?.def is null || __instance?.world?.worldPawns is null || rules is null)
             return true;
         PawnKindDef senatorPawnKindDef;

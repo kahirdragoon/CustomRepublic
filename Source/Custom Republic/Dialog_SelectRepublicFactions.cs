@@ -31,8 +31,6 @@ public class Dialog_SelectRepublicFactions : Window
     private int numOfSenatorsPerfaction = 3;
     private int availableSenatorsCount => Math.Min(1, selectedPerksCount);
 
-    private GameComponent_Republic republicComp;
-
     private const float padding = 10f;
 
     public Dialog_SelectRepublicFactions(List<FactionDef> existingFactionDefs)
@@ -41,8 +39,7 @@ public class Dialog_SelectRepublicFactions : Window
         doCloseX = true;
         closeOnClickedOutside = false;
 
-        republicComp = Current.Game.GetComponent<GameComponent_Republic>()!;
-        var rules = republicComp.rules;
+        var rules = GameComponent_Republic.Instance?.rules;
 
         // --- FACTIONS ---
         foreach (var factionDef in existingFactionDefs)
@@ -315,7 +312,9 @@ public class Dialog_SelectRepublicFactions : Window
 
     private void SaveSelections()
     {
-        var comp = Current.Game.GetComponent<GameComponent_Republic>();
+        var comp = GameComponent_Republic.Instance;
+        if (comp is null)
+            return;
         comp.rules.ignoreTechprintResearch = ignoreTechprintResearch;
         comp.rules.useDummyResearch = useDummyResearch;
         comp.rules.numOfSenatorsPerFaction = numOfSenatorsPerfaction;

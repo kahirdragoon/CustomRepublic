@@ -9,7 +9,7 @@ internal static class Patch_DoPerkButton
 {
     public static bool Prefix()
     {
-        var comp = Current.Game?.GetComponent<GameComponent_Republic>();
+        var comp = GameComponent_Republic.Instance;
         if (comp?.state?.factionStates?.Any(factionState => Find.FactionManager.FirstFactionOfDef(factionState.factionDef) != null) == true)
         {
             if (Widgets.ButtonText(new Rect(0, 10f, 120f, 30f), "VFEC.UI.ViewPerks".Translate()))

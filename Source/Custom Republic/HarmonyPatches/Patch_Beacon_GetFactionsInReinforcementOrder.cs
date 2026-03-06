@@ -18,7 +18,7 @@ internal static class Patch_Beacon_GetFactionsInReinforcementOrder
 {
     public static bool Prefix(ref IEnumerable<Faction> __result)
     {
-        var factionStates = Current.Game.GetComponent<GameComponent_Republic>()?.state?.factionStates;
+        var factionStates = GameComponent_Republic.Instance?.state?.factionStates;
         if(factionStates is null || factionStates.Count == 0)
             return true;
 

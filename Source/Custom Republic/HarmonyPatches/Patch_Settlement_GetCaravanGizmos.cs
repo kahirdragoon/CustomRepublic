@@ -12,7 +12,10 @@ public static class Patch_Settlement_GetCaravanGizmos
     static void Postfix(Settlement __instance, ref IEnumerable<Gizmo> __result, Caravan caravan)
     {
         var list = new List<Gizmo>(__result);
-        if(CaravanVisitUtility.SettlementVisitedNow(caravan) == __instance)
+        if (GameComponent_Republic.Instance is null)
+            return;
+        if (CaravanVisitUtility.SettlementVisitedNow(caravan) == __instance
+            && !GameComponent_Republic.Instance.state.HasFaction(__instance.Faction.def))
             list.Add(Caravan_InviteToRepublicUtility.InviteToRepublicCommand(__instance.Faction));
         __result = list;
     }

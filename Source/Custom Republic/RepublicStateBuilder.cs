@@ -15,7 +15,12 @@ public static class RepublicStateBuilder
 
     public static void BuildFromRules()
     {
-        var comp = Current.Game.GetComponent<GameComponent_Republic>();
+        var comp = GameComponent_Republic.Instance;
+        if (comp == null)
+        {
+            Log.Error("GameComponent_Republic instance is null. Cannot build republic state.");
+            return;
+        }
         var rules = comp.rules;
         comp.state = new();
         var state = comp.state;
@@ -52,7 +57,7 @@ public static class RepublicStateBuilder
 
         int perkIndex = 0;
 
-        perkDefs = perkDefs.InRandomOrder().ToList();
+        perkDefs = [.. perkDefs.InRandomOrder()];
 
         foreach (var factionDef in factionDefs)
         {
@@ -62,16 +67,16 @@ public static class RepublicStateBuilder
 
                 usedResearchDefs.UnionWith(senatorInfoModExt.senatorResearch.Select(r => r.defName));
                 //availableResearch.RemoveAll(r => senatorInfoModExt.senatorResearch.Contains(r));
-                perkDefs = perkDefs.Where(p => !senatorInfoModExt.senatorPerks.Contains(p)).ToList();
+                perkDefs = [.. perkDefs.Where(p => !senatorInfoModExt.senatorPerks.Contains(p))];
 
                 state.factionStates.Add(new RepublicStateFaction
                 {
                     factionDefName = factionDef.defName,
                     factionDef = factionDef,
                     numSenators = senatorInfoModExt.numSenators,
-                    senatorPerks = senatorInfoModExt.senatorPerks.Select(p => p.defName).ToList(),
+                    senatorPerks = [.. senatorInfoModExt.senatorPerks.Select(p => p.defName)],
                     finalPerk = senatorInfoModExt.finalPerk.defName,
-                    senatorResearch = senatorInfoModExt.senatorResearch.Select(r => r.defName).ToList(),
+                    senatorResearch = [.. senatorInfoModExt.senatorResearch.Select(r => r.defName)],
                     finalResearch = senatorInfoModExt.finalResearch.defName,
                     pawnKindDef = senatorInfoModExt.senatorPawnKindDef?.defName,
                 });
@@ -106,7 +111,7 @@ public static class RepublicStateBuilder
 
                 // --- Research ---
                 string finalResearchDefName = dummyResearchProjectDef.defName;
-                List<string> senatorResearchDefNames = Enumerable.Repeat(dummyResearchProjectDef.defName, numSenators).ToList();
+                List<string> senatorResearchDefNames = [.. Enumerable.Repeat(dummyResearchProjectDef.defName, numSenators)];
 
                 if (!rules.useDummyResearch)
                 {
@@ -190,7 +195,22 @@ public static class RepublicStateBuilder
             };
         }
 
-        var rules = Current.Game.GetComponent<GameComponent_Republic>().rules;
+        var rules = GameComponent_Republic.Instance?.rules;
+        if (rules == null)
+        {
+            Log.Error("GameComponent_Republic instance or rules is null. Cannot build faction state.");
+            return new RepublicStateFaction
+            {
+                factionDefName = factionDef.defName,
+                factionDef = factionDef,
+                numSenators = 0,
+                senatorPerks = [],
+                finalPerk = "",
+                senatorResearch = [],
+                finalResearch = "",
+                pawnKindDef = null
+            };
+        }
 
         rules.selectedFactionDefs.Add(factionDef.defName);
 
@@ -202,7 +222,12 @@ public static class RepublicStateBuilder
         numSenators = Math.Min(numSenators, 5);
         var numPerksNeeded = numSenators + 1;
 
-        var republicFactions = Current.Game.GetComponent<GameComponent_Republic>().state.factionStates;
+        var republicFactions = GameComponent_Republic.Instance?.state.factionStates;
+        if (republicFactions == null)
+        {
+            Log.Error("GameComponent_Republic instance or state factionStates is null. Cannot determine used perks for faction state.");
+            republicFactions = [];
+        }
         var usedPerks = republicFactions.SelectMany(f => f.senatorPerks).ToHashSet();
         var perkDefs = availablePerkDefs.Where(p => !usedPerks.Contains(p.defName)).TakeRandomDistinct(numPerksNeeded).ToList();
         if (perkDefs.Count < numPerksNeeded)

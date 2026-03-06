@@ -30,7 +30,7 @@ internal class Patch_WorldComponent_Senators_GainFavorOf
             Log.ErrorOnce("[Custom Republic] United of WorldComponent_Senators is null or not found", 12345678);
             return true;
         }
-        var republic = Current.Game.GetComponent<GameComponent_Republic>()?.state;
+        var republic = GameComponent_Republic.Instance?.state;
         if (republic == null)
         {
             Log.ErrorOnce("[Custom Republic] RepublicState is null in GainFavorOf patch", 87654321);

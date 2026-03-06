@@ -10,7 +10,7 @@ internal static class Patch_CommConsole_InviteToRepublic
     static void Postfix(DiaNode __result, Pawn negotiator, Faction faction)
     {
         var map = negotiator.Map;
-        if (map == null || !map.IsPlayerHome || Current.Game.GetComponent<GameComponent_Republic>().state.HasFaction(faction.def))
+        if (map == null || !map.IsPlayerHome || (GameComponent_Republic.Instance != null && GameComponent_Republic.Instance.state.HasFaction(faction.def)))
             return;
         var text = "CR_InviteToRepublic".Translate();
         var diaOption = new DiaOption(text);
@@ -23,8 +23,8 @@ internal static class Patch_CommConsole_InviteToRepublic
         {
             diaOption.action = () =>
             {
-                var state = Current.Game.GetComponent<GameComponent_Republic>().state;
-                state.InviteToRepublic(faction);
+                var state = GameComponent_Republic.Instance?.state;
+                state?.InviteToRepublic(faction);
             };
             diaOption.link = new DiaNode("CR_RepublicAccepted".Translate())
             {

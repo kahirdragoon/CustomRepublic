@@ -153,10 +153,10 @@ internal static class Patch_Reroute_VFEC_Calls
 
     private static bool HasModExtensionReplacement(Def def)
     {
-        if (def is not FactionDef)
+        if (def is null || def is not FactionDef)
             return false;
 
-        var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
+        var state = GameComponent_Republic.Instance?.state;
         if (state == null)
             return def.HasModExtension<FactionExtension_SenatorInfoExtended>();
         return state.factionStates.Any(f => f.factionDefName == def.defName) || def.HasModExtension<FactionExtension_SenatorInfoExtended>();
@@ -164,7 +164,7 @@ internal static class Patch_Reroute_VFEC_Calls
 
     //private static List<FactionDef> PartReplacement(RepublicDef republicDef)
     //{
-    //    var state = Current.Game?.GetComponent<GameComponent_Republic>()?.state;
+    //    var state = GameComponent_Republic.Instance?.state;
     //    if (state == null)
     //        return republicDef.parts;
     //    return state.GetFactionDefs(republicDef);

@@ -7,9 +7,7 @@
     <Operation Class="PatchOperationReplace">
         <xpath>Defs/VFEC.Senators.RepublicDef[defName="VFEC_Republic"]/letterText</xpath>
         <value>
-            <letterText>
-                After gaining the support of all parts of the republic, it has now united under your faction's rule.
-            </letterText>
+            <letterText>After gaining the support of all parts of the republic, it has now united under your faction's rule.</letterText>
         </value>
     </Operation>
     
