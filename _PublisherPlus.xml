@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <Excluded>
+    <exclude>.git</exclude>
+    <exclude>About\Preview.xcf</exclude>
+    <exclude>About\Preview-big.png</exclude>
+    <exclude>README.md</exclude>
+    <exclude>Source</exclude>
+  </Excluded>
+</Configuration>
