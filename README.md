@@ -8,7 +8,7 @@
 - 11 new Perks
 
 ## How does it work
-During the world creations screen where you select the factions for your world will be a new button to customize the republic. 
+During the world creation screen where you select the factions for your world will be a new button to customize the republic. 
 There you can select the initial members of your republic. You can also select the pawnkind of the senators. If default is choosen it will use the senator pawnkind from VFE Classical (the ones with the togas).
 During game start perks and research will be distributed randomly to republic senators. Each faction can only have research associated to it senators that is of the same tech level than the faction. With default settings first tech printed ressearch is distributed first. If there is no more tech printed research avalable normal research will be used instead. There is also an option to disable tech printed research for distribution if you want to get it the old fashioned way. If you dont care about the research aspect you can also enable the option to assign dummy research. In that case every senators will be assigned the same a low tech research usually tree sowing. The Perks will be distributed randomly. If there are more senators than perks perks might be assigned twice.
 

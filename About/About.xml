@@ -6,7 +6,7 @@
     <supportedVersions>
         <li>1.6</li>
     </supportedVersions>
-    <description>Changes the Rpublic to contain insect factions
+    <description>makes i possible to create a custom republic at game start and also invite Allies to join your Republic.
     </description>
     <modDependencies>
         <li>
