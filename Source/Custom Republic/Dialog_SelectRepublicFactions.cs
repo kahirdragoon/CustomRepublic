@@ -318,5 +318,6 @@ public class Dialog_SelectRepublicFactions : Window
         comp.rules.pawnKindPerFaction = selectedFactionPawnKinds
             .ToDictionary(kvp => kvp.Key.defName, kvp => kvp.Value?.defName);
         comp.rules.selectedPerkDefs = [.. selectedPerks.Where(kvp => kvp.Value).Select(kvp => kvp.Key.defName)];
+        RepublicStateBuilder.BuildFromRules();
     }
 }
