@@ -19,6 +19,7 @@ internal class CustomRepublicMod : Mod
         {
             Harmony.PatchAll();
             Patch_Reroute_VFEC_Calls.Apply();
+            Patch_Tributum.Apply();
         });
     }
 

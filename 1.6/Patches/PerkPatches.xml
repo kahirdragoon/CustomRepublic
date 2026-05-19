@@ -13,4 +13,11 @@
             <texPath>UI/Perks/Perk_MensSanaInCorporeSano</texPath>
         </value>
     </Operation>
+
+    <Operation Class="PatchOperationReplace">
+        <xpath>Defs/VFEC.Perks.PerkDef[defName="Tributum"]/description</xpath>
+        <value>
+            <description>Gain annual silver donation equal to 5% of the player wealth. Prices at this faction's vendors get halved.</description>
+        </value>
+    </Operation>
 </Patch>
