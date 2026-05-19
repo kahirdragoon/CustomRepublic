@@ -19,6 +19,10 @@
   <CR.LessSenatorsThanPerks>Less senators than perks. Not all selected perks will be available.</CR.LessSenatorsThanPerks>
   <CR.MoreThan7FactionsWarning>&lt;color=yellow&gt;More than 7 factions selected. The perk overview dialog may not display all factions correctly. Press ESC to close.&lt;/color&gt;</CR.MoreThan7FactionsWarning>
 
+  <CR.ButtonLocationSetting>Where to show the "Customize Republic" button</CR.ButtonLocationSetting>
+  <CR.ButtonLocationWorldParams>World generation page</CR.ButtonLocationWorldParams>
+  <CR.ButtonLocationStartingSite>Starting site selection page</CR.ButtonLocationStartingSite>
+
   <CR.CommandInviteToRepublic>Invite to Republic</CR.CommandInviteToRepublic>
   <CR.CommandInviteToRepublicDesc>Invite this faction to join your republic.</CR.CommandInviteToRepublicDesc>
 
