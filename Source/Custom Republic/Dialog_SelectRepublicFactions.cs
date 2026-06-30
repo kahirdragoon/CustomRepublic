@@ -292,11 +292,8 @@ public class Dialog_SelectRepublicFactions : Window
             })
         };
 
-        foreach (var kind in DefDatabase<PawnKindDef>.AllDefs)
+        foreach (var kind in GetPawnKindsForFaction(factionDef))
         {
-            if (kind.race?.race?.Humanlike != true) continue;
-            if (kind.defaultFactionDef != factionDef) continue;
-
             opts.Add(new FloatMenuOption(kind.label, () =>
             {
                 selectedFactionPawnKinds[factionDef] = kind;
@@ -304,6 +301,34 @@ public class Dialog_SelectRepublicFactions : Window
         }
 
         return opts;
+    }
+
+    // defaultFactionDef alone misses most humanlike kinds (e.g. tribal warriors), which are
+    // only linked to a faction through its pawnGroupMakers, not the reverse field on the kind.
+    private static IEnumerable<PawnKindDef> GetPawnKindsForFaction(FactionDef factionDef)
+    {
+        var kinds = new HashSet<PawnKindDef>(
+            DefDatabase<PawnKindDef>.AllDefs.Where(k => k.defaultFactionDef == factionDef));
+
+        if (factionDef.pawnGroupMakers != null)
+        {
+            foreach (var maker in factionDef.pawnGroupMakers)
+            {
+                AddKinds(maker.options);
+                AddKinds(maker.traders);
+                AddKinds(maker.carriers);
+            }
+        }
+
+        return kinds.Where(k => k.race?.race?.Humanlike == true).OrderBy(k => k.label);
+
+        void AddKinds(List<PawnGenOption>? options)
+        {
+            if (options == null) return;
+            foreach (var option in options)
+                if (option.kind != null)
+                    kinds.Add(option.kind);
+        }
     }
 
     private void SaveSelections()
