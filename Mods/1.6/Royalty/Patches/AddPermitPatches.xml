@@ -9,7 +9,10 @@
             or defName="VFEE_Archduke"
             or defName="VFEE_Magister"
             or defName="VFEE_Despot"
-            or defName="VFEE_HighStellarch"]/permits</xpath>
+            or defName="VFEE_HighStellarch"
+            or @ParentName="DukeBase"
+            or @ParentName="ConsulBase"
+            or @ParentName="StellarchBase"]/permits</xpath>
         <value>
             <li>InviteToRepublic</li>
         </value>

@@ -17,5 +17,6 @@
     </modDependencies>
     <loadAfter>
         <li>oskarpotocki.vfe.classical</li>
+        <li>ferny.progressioncore</li>
     </loadAfter>
 </ModMetaData>

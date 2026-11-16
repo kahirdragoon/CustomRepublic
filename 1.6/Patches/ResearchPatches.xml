@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+    <!-- Senator research from VFE Classical (1500 after Progression: Core): 1500 - 1000 = 500 -->
+    <Operation Class="PatchOperationReplace">
+        <xpath>Defs/ResearchProjectDef[
+            defName="VFEC_Togas" or defName="VFEC_TemperatureControl" or defName="VFEC_MeatDrying" or defName="VFEC_Mosaics" or defName="VFEC_Thermaebath" or defName="VFEC_DramaAndComedy" or
+            defName="VFEC_HeavyShieldMaking" or defName="VFEC_LegionaryArmaments" or defName="VFEC_LegionnaireArmor" or defName="VFEC_CenturionArmor" or defName="VFEC_Scorpion" or defName="VFEC_Beacons" or
+            defName="VFEC_BronzeWorking" or defName="VFEC_CraftingBench" or defName="VFEC_CementMaking" or defName="VFEC_WoodfiredCrematorium" or defName="VFEC_TyrianProduction" or defName="VFEC_RoadBuilding"
+        ]/baseCost</xpath>
+        <value>
+            <baseCost>500</baseCost>
+        </value>
+    </Operation>
+</Patch>

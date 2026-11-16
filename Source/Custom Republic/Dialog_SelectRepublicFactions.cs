@@ -39,7 +39,8 @@ public class Dialog_SelectRepublicFactions : Window
         // --- FACTIONS ---
         foreach (var factionDef in existingFactionDefs)
         {
-            if (!factionDef.isPlayer && !factionDef.hidden && !factionDef.permanentEnemy)
+            // humanlikeFaction catches mods that un-hide non-humanlike factions (e.g. VFE Insectoids 2 turns Insect into the visible "Hive")
+            if (!factionDef.isPlayer && !factionDef.hidden && !factionDef.permanentEnemy && factionDef.humanlikeFaction)
             {
                 if(factionDef.HasModExtension<FactionExtension_SenatorInfoExtended>())
                     factionDefsWithExtension.Add(factionDef);
@@ -60,7 +61,7 @@ public class Dialog_SelectRepublicFactions : Window
         }
 
         // --- PERKS ---
-        foreach (var perk in DefDatabase<PerkDef>.AllDefsListForReading.Where(p => p.defName != "VeniVidiVici"))
+        foreach (var perk in DefDatabase<PerkDef>.AllDefsListForReading.Where(RepublicStateBuilder.IsSelectablePerk))
         {
             bool selected = rules?.selectedPerkDefs == null || rules.selectedPerkDefs.Count == 0 || rules.selectedPerkDefs.Contains(perk.defName);
             selectedPerks[perk] = selected;
